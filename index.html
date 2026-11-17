@@ -1,0 +1,3188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sapphire" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paypulse v10.01 | POS Terminal</title>
+
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2313/2313039.png">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2313/2313039.png">
+  <link rel="manifest" id="appManifestLink">
+  <meta name="theme-color" content="#4f46e5">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f3ff',
+              100: '#e1e7fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    /* Platinum Executive Theme */
+    :root, [data-theme="platinum"] {
+      --bg-main: #f3f4f8;
+      --bg-header-bar: linear-gradient(135deg, #4f46e5, #4338ca);
+      --header-text: #ffffff;
+      --header-sub: rgba(255, 255, 255, 0.8);
+      --bg-card: #ffffff;
+      --bg-card-sub: #f8fafc;
+      --border-color: #e2e8f0;
+      --accent-primary: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-gradient: linear-gradient(135deg, #6366f1, #4f46e5, #4338ca);
+      --accent-text: #4f46e5;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --card-glow: 0 4px 20px -2px rgba(79, 70, 229, 0.12);
+      --badge-bg: rgba(79, 70, 229, 0.08);
+      --keypad-bg: #ffffff;
+      --keypad-hover: #f1f5f9;
+      --theme-btn-bg: #f59e0b;
+      --theme-btn-icon: #ffffff;
+      --dots-btn-bg: rgba(255, 255, 255, 0.22);
+      --dots-btn-icon: #ffffff;
+      --active-payee-bg: #ede9fe;
+      --active-payee-border: #c7d2fe;
+    }
+
+    /* Royal Sapphire Theme */
+    [data-theme="sapphire"] {
+      --bg-main: #0b0f19;
+      --bg-header-bar: #0f172a;
+      --header-text: #f8fafc;
+      --header-sub: #94a3b8;
+      --bg-card: #141a29;
+      --bg-card-sub: #0f1422;
+      --border-color: #1e293b;
+      --accent-primary: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-gradient: linear-gradient(135deg, #6366f1, #4f46e5, #3730a3);
+      --accent-text: #818cf8;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --card-glow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
+      --badge-bg: rgba(99, 102, 241, 0.15);
+      --keypad-bg: #111625;
+      --keypad-hover: #1e2638;
+      --theme-btn-bg: #1e1b4b;
+      --theme-btn-icon: #a5b4fc;
+      --dots-btn-bg: #1e293b;
+      --dots-btn-icon: #f8fafc;
+      --active-payee-bg: #0f1526;
+      --active-payee-border: #2e3856;
+    }
+
+    /* Imperial Gold Theme */
+    [data-theme="gold"] {
+      --bg-main: #090a0f;
+      --bg-header-bar: #14121c;
+      --header-text: #fffbeb;
+      --header-sub: #d97706;
+      --bg-card: #171522;
+      --bg-card-sub: #0f0d17;
+      --border-color: rgba(217, 119, 6, 0.3);
+      --accent-primary: #d97706;
+      --accent-hover: #b45309;
+      --accent-gradient: linear-gradient(135deg, #f59e0b, #d97706, #78350f);
+      --accent-text: #fbbf24;
+      --text-main: #fffbeb;
+      --text-sub: #d97706;
+      --card-glow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
+      --badge-bg: rgba(245, 158, 11, 0.18);
+      --keypad-bg: #13111c;
+      --keypad-hover: #262133;
+      --theme-btn-bg: #f59e0b;
+      --theme-btn-icon: #000000;
+      --dots-btn-bg: rgba(245, 158, 11, 0.2);
+      --dots-btn-icon: #fbbf24;
+      --active-payee-bg: #1c1829;
+      --active-payee-border: #523b12;
+    }
+
+    /* Regal Emerald Theme */
+    [data-theme="emerald"] {
+      --bg-main: #022c22;
+      --bg-header-bar: #064e3b;
+      --header-text: #ecfdf5;
+      --header-sub: #6ee7b7;
+      --bg-card: rgba(6, 78, 59, 0.5);
+      --bg-card-sub: rgba(2, 44, 34, 0.85);
+      --border-color: rgba(16, 185, 129, 0.3);
+      --accent-primary: #10b981;
+      --accent-hover: #059669;
+      --accent-gradient: linear-gradient(135deg, #34d399, #10b981, #047857);
+      --accent-text: #34d399;
+      --text-main: #ecfdf5;
+      --text-sub: #6ee7b7;
+      --card-glow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+      --badge-bg: rgba(16, 185, 129, 0.2);
+      --keypad-bg: rgba(2, 44, 34, 0.7);
+      --keypad-hover: rgba(6, 78, 59, 0.8);
+      --theme-btn-bg: #10b981;
+      --theme-btn-icon: #000000;
+      --dots-btn-bg: rgba(16, 185, 129, 0.2);
+      --dots-btn-icon: #6ee7b7;
+      --active-payee-bg: rgba(6, 78, 59, 0.7);
+      --active-payee-border: rgba(16, 185, 129, 0.4);
+    }
+
+    /* Crown Burgundy Theme */
+    [data-theme="burgundy"] {
+      --bg-main: #1e0a14;
+      --bg-header-bar: #2d101f;
+      --header-text: #fff1f2;
+      --header-sub: #fecdd3;
+      --bg-card: rgba(45, 16, 31, 0.8);
+      --bg-card-sub: rgba(20, 5, 13, 0.85);
+      --border-color: rgba(225, 29, 72, 0.3);
+      --accent-primary: #e11d48;
+      --accent-hover: #be123c;
+      --accent-gradient: linear-gradient(135deg, #fb7185, #e11d48, #881337);
+      --accent-text: #fb7185;
+      --text-main: #fff1f2;
+      --text-sub: #fecdd3;
+      --card-glow: 0 0 25px -5px rgba(225, 29, 72, 0.3);
+      --badge-bg: rgba(225, 29, 72, 0.2);
+      --keypad-bg: rgba(20, 5, 13, 0.8);
+      --keypad-hover: rgba(76, 14, 45, 0.8);
+      --theme-btn-bg: #e11d48;
+      --theme-btn-icon: #ffffff;
+      --dots-btn-bg: rgba(225, 29, 72, 0.2);
+      --dots-btn-icon: #fb7185;
+      --active-payee-bg: rgba(45, 16, 31, 0.9);
+      --active-payee-border: rgba(225, 29, 72, 0.4);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      user-select: none;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.3);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.5);
+    }
+
+    .keypad-btn:active {
+      transform: scale(0.95);
+    }
+
+    .theme-header {
+      background: var(--bg-header-bar);
+      color: var(--header-text);
+    }
+
+    .theme-card-bg {
+      background-color: var(--bg-card);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+
+    .theme-sub-bg {
+      background-color: var(--bg-card-sub);
+    }
+
+    .theme-accent-btn {
+      background: var(--accent-gradient);
+    }
+
+    .theme-accent-text {
+      color: var(--accent-text);
+    }
+
+    .theme-keypad {
+      background-color: var(--keypad-bg);
+      border-color: var(--border-color);
+    }
+
+    .theme-keypad:hover {
+      background-color: var(--keypad-hover);
+    }
+  </style>
+</head>
+<body class="min-h-screen transition-colors duration-300 antialiased pb-10">
+
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="theme-header shadow-md border-b border-white/10 px-4 sm:px-6 lg:px-8 py-3.5 mb-5 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Header Titles -->
+      <div class="flex items-center gap-3 text-left">
+        <div class="w-10 h-10 rounded-2xl p-2 bg-white/95 dark:bg-slate-900 border border-white/20 shadow-md flex items-center justify-center shrink-0">
+          <img src="https://cdn-icons-png.flaticon.com/512/2313/2313039.png" alt="Paypulse Logo" class="w-full h-full object-contain">
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-black tracking-tight leading-none text-white">
+              Paypulse <span class="text-xs font-bold px-1.5 py-0.5 rounded-md bg-white/20 text-white ml-1">v10.01</span>
+            </h1>
+          </div>
+          <p class="text-[10px] sm:text-[11px] opacity-80 mt-0.5">Instant UPI Payment QR Terminal</p>
+        </div>
+      </div>
+
+      <!-- Controls Right Corner -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Cloud Sync Status Pill -->
+        <button onclick="openCloudBackupModal()" class="h-9 sm:h-10 px-2.5 sm:px-3 rounded-2xl flex items-center gap-1.5 transition shadow-sm border border-white/15" style="background-color: var(--dots-btn-bg); color: var(--dots-btn-icon);" title="Cloud Backup & Sync Status">
+          <span id="headerCloudDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
+          <svg class="w-4 h-4 shrink-0 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+          </svg>
+          <span id="headerCloudStatusText" class="text-[10px] sm:text-xs font-bold tracking-tight hidden xs:inline sm:inline">Syncing</span>
+        </button>
+
+        <!-- Palette Theme Dropdown Button -->
+        <div class="relative" id="themeMenuWrapper">
+          <button onclick="toggleThemeMenu()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center transition shadow-sm" style="background-color: var(--theme-btn-bg); color: var(--theme-btn-icon);" title="Select Theme">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.75 1.7-1.67 0-.42-.16-.8-.43-1.09-.27-.29-.43-.69-.43-1.11 0-.92.75-1.67 1.67-1.67H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9z"/>
+            </svg>
+          </button>
+
+          <!-- Theme Palette Menu -->
+          <div id="themeMenuDropdown" class="hidden absolute right-0 mt-2 w-60 theme-card-bg backdrop-blur-xl border rounded-2xl shadow-2xl z-50 p-2 space-y-1.5 transition-all duration-150 transform opacity-0 scale-95" style="color: var(--text-main);">
+            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider opacity-60">Themes Palette</div>
+            
+            <button onclick="setTheme('sapphire'); closeThemeMenu();" class="w-full p-2 rounded-xl border text-left transition flex items-center justify-between bg-slate-900 border-indigo-500/40">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xs">💎</span>
+                <div>
+                  <div class="text-xs font-bold text-white">Royal Sapphire</div>
+                  <div class="text-[9px] text-indigo-300">Midnight Indigo</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-indigo-400 theme-indicator" id="theme-indicator-sapphire"></span>
+            </button>
+
+            <button onclick="setTheme('platinum'); closeThemeMenu();" class="w-full p-2 rounded-xl border text-left transition flex items-center justify-between bg-slate-100 border-slate-300">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xs">🛡️</span>
+                <div>
+                  <div class="text-xs font-bold text-slate-900">Platinum Executive</div>
+                  <div class="text-[9px] text-slate-600">Light Indigo POS</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-blue-600 theme-indicator" id="theme-indicator-platinum"></span>
+            </button>
+
+            <button onclick="setTheme('gold'); closeThemeMenu();" class="w-full p-2 rounded-xl border text-left transition flex items-center justify-between bg-neutral-950 border-amber-500/40">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xs">👑</span>
+                <div>
+                  <div class="text-xs font-bold text-amber-100">Imperial Gold</div>
+                  <div class="text-[9px] text-amber-400">Obsidian & Gold</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-amber-400 theme-indicator" id="theme-indicator-gold"></span>
+            </button>
+
+            <button onclick="setTheme('emerald'); closeThemeMenu();" class="w-full p-2 rounded-xl border text-left transition flex items-center justify-between bg-emerald-950 border-emerald-500/40">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xs">💚</span>
+                <div>
+                  <div class="text-xs font-bold text-emerald-100">Regal Emerald</div>
+                  <div class="text-[9px] text-emerald-300">Deep Jade</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-400 theme-indicator" id="theme-indicator-emerald"></span>
+            </button>
+
+            <button onclick="setTheme('burgundy'); closeThemeMenu();" class="w-full p-2 rounded-xl border text-left transition flex items-center justify-between bg-rose-950 border-rose-500/40">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xs">🍷</span>
+                <div>
+                  <div class="text-xs font-bold text-rose-100">Crown Burgundy</div>
+                  <div class="text-[9px] text-rose-300">Velvet Wine</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-rose-400 theme-indicator" id="theme-indicator-burgundy"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-Dots System Menu Button -->
+        <div class="relative" id="systemMenuWrapper">
+          <button onclick="toggleSystemMenu()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center transition shadow-sm" style="background-color: var(--dots-btn-bg); color: var(--dots-btn-icon);" title="More Options">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+            </svg>
+          </button>
+
+          <!-- 3-Dots Dropdown Options -->
+          <div id="systemMenuDropdown" class="hidden absolute right-0 mt-2 w-56 theme-card-bg backdrop-blur-xl border rounded-2xl shadow-2xl z-50 py-1.5 transition-all duration-150 transform opacity-0 scale-95" style="color: var(--text-main);">
+            <button onclick="triggerPwaInstall()" class="w-full px-3.5 py-2.5 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <div class="w-6 h-6 rounded-lg p-1 flex items-center justify-center shrink-0" style="background-color: var(--badge-bg);">
+                <img src="https://cdn-icons-png.flaticon.com/512/2313/2313039.png" alt="Install Icon" class="w-full h-full object-contain">
+              </div>
+              <div>
+                <span id="pwaInstallTitle" class="block leading-tight">Install App</span>
+                <span id="pwaInstallSub" class="text-[9px] opacity-60 font-normal">Add to Home Screen</span>
+              </div>
+            </button>
+
+            <div class="my-1 border-t opacity-20" style="border-color: var(--border-color);"></div>
+
+            <button onclick="openBulkAddModal(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>Bulk Add UPI IDs</span>
+            </button>
+
+            <button onclick="exportUpiAccounts(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              <span>Export UPI IDs</span>
+            </button>
+
+            <button onclick="triggerImportUpiFile(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" transform="rotate(180 12 12)"/>
+              </svg>
+              <span>Import UPI IDs</span>
+            </button>
+
+            <button onclick="openResetUpiModal(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 text-red-500 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              <span>Reset All UPI IDs</span>
+            </button>
+
+            <div class="my-1 border-t opacity-20" style="border-color: var(--border-color);"></div>
+
+            <button onclick="openCloudBackupModal(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+              </svg>
+              <div class="flex flex-col">
+                <span class="leading-tight">Cloud Backup & Sync</span>
+                <span id="cloudSyncMenuStatus" class="text-[9px] text-emerald-500 font-bold">Connecting...</span>
+              </div>
+            </button>
+
+            <div class="my-1 border-t opacity-20" style="border-color: var(--border-color);"></div>
+
+            <button onclick="openAboutModal(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>About App</span>
+            </button>
+
+            <button onclick="toggleSound(); closeSystemMenu();" class="w-full px-3.5 py-2 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition flex items-center gap-2.5 text-left">
+              <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+              </svg>
+              <span>Audio Feedback</span>
+            </button>
+
+            <div class="px-3.5 py-1.5 text-[10px] opacity-50 border-t mt-1" style="border-color: var(--border-color);">
+              Paypulse v10.01
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
+      
+      <section class="lg:col-span-5 theme-card-bg border rounded-3xl p-4 sm:p-5 flex flex-col shadow-sm">
+        
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <div class="min-w-0">
+            <h2 class="text-xs sm:text-sm font-extrabold flex items-center gap-1.5 truncate">
+              <svg class="w-4 h-4 theme-accent-text shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+              Select Payee Account
+            </h2>
+            <p class="text-[10px] sm:text-[11px] opacity-70 truncate">Choose destination UPI ID</p>
+          </div>
+          
+          <button onclick="openAddModal()" class="px-3 py-1.5 rounded-xl theme-accent-btn text-white text-[11px] font-bold flex items-center gap-1 transition shrink-0 shadow-md">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+            </svg>
+            + Add New
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative mb-3">
+          <svg class="w-4 h-4 absolute left-3 top-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input type="text" id="merchantSearch" oninput="filterMerchants()" placeholder="Search payee or UPI handle..." class="w-full theme-sub-bg border rounded-2xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition" style="border-color: var(--border-color);">
+        </div>
+
+        <!-- Scrollable Payee Cards Container -->
+        <div id="upiList" class="space-y-1.5 max-h-[420px] overflow-y-auto pr-1 pb-16">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <div id="activeMerchantCard" class="mt-4 p-3.5 rounded-2xl border transition-all duration-300 flex items-center justify-between" style="background-color: var(--active-payee-bg); border-color: var(--active-payee-border);">
+          <div class="flex items-center gap-3 min-w-0">
+            <div id="activeAvatar" class="w-11 h-11 rounded-2xl font-black text-sm flex items-center justify-center shrink-0 border text-white shadow-md bg-indigo-600 border-indigo-400">
+              --
+            </div>
+            <div class="truncate">
+              <div class="text-[9px] theme-accent-text font-black uppercase tracking-wider">SELECTED PAYEE</div>
+              <div id="activeName" class="text-xs sm:text-sm font-extrabold truncate">Select a merchant</div>
+              <div id="activeUpi" class="text-[10px] sm:text-xs opacity-70 font-mono truncate">--</div>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Ready
+            </span>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="lg:col-span-7 theme-card-bg border rounded-3xl p-5 sm:p-6 shadow-sm relative">
+        
+        <!-- Terminal Mode Switcher Tabs -->
+        <div class="flex items-center theme-sub-bg p-1 rounded-2xl border mb-4" style="border-color: var(--border-color);">
+          <button id="tabQuickMode" onclick="setTerminalMode('quick')" class="flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 theme-accent-btn text-white shadow-md">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Quick Entry
+          </button>
+          <button id="tabCalcMode" onclick="setTerminalMode('calc')" class="flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 opacity-60 hover:opacity-100">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            Calculator Mode
+          </button>
+        </div>
+
+        <!-- Amount Display Box -->
+        <div class="theme-sub-bg border rounded-2xl p-4 mb-4 text-center relative overflow-hidden" style="border-color: var(--border-color);">
+          <div id="calcExpressionDisplay" class="text-xs font-mono opacity-60 h-4 mb-1 truncate hidden text-right pr-2"></div>
+          
+          <label id="amountLabel" class="block text-[11px] font-bold opacity-70 uppercase tracking-wider mb-1">Enter Amount</label>
+          <div class="flex items-center justify-center gap-1">
+            <span class="text-2xl sm:text-3xl font-black opacity-50">₹</span>
+            <input type="text" id="amount" readonly placeholder="0" class="w-full bg-transparent text-center font-mono text-3xl sm:text-4xl font-black theme-accent-text focus:outline-none tracking-tight">
+          </div>
+          <div id="amountError" class="text-red-500 text-xs font-bold mt-1.5 hidden animate-bounce">
+            ⚠️ Please enter a valid amount greater than ₹0
+          </div>
+        </div>
+
+        <!-- Quick Amount Increments -->
+        <div id="quickPresetRow" class="grid grid-cols-5 gap-2 mb-4">
+          <button onclick="addPresetAmount(10)" class="py-2 rounded-xl theme-keypad text-xs font-bold border transition shadow-sm">+₹10</button>
+          <button onclick="addPresetAmount(50)" class="py-2 rounded-xl theme-keypad text-xs font-bold border transition shadow-sm">+₹50</button>
+          <button onclick="addPresetAmount(100)" class="py-2 rounded-xl theme-keypad text-xs font-bold border transition shadow-sm">+₹100</button>
+          <button onclick="addPresetAmount(500)" class="py-2 rounded-xl theme-keypad text-xs font-bold border transition shadow-sm">+₹500</button>
+          <button onclick="addPresetAmount(1000)" class="py-2 rounded-xl theme-keypad text-xs font-bold border transition shadow-sm">+₹1k</button>
+        </div>
+
+        <!-- Quick Entry Numpad Grid -->
+        <div id="quickNumpad" class="grid grid-cols-3 gap-2 sm:gap-2.5 mb-5">
+          <button onclick="numpadPress('1')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">1</button>
+          <button onclick="numpadPress('2')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">2</button>
+          <button onclick="numpadPress('3')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">3</button>
+
+          <button onclick="numpadPress('4')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">4</button>
+          <button onclick="numpadPress('5')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">5</button>
+          <button onclick="numpadPress('6')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">6</button>
+
+          <button onclick="numpadPress('7')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">7</button>
+          <button onclick="numpadPress('8')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">8</button>
+          <button onclick="numpadPress('9')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">9</button>
+
+          <button onclick="numpadPress('.')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">.</button>
+          <button onclick="numpadPress('0')" class="keypad-btn py-3.5 rounded-2xl theme-keypad text-lg font-black border transition shadow-sm">0</button>
+          <button onclick="clearAmount()" class="keypad-btn py-3.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-lg font-bold text-red-500 border border-red-500/20 transition flex items-center justify-center shadow-sm" title="Backspace">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2H10.828a2 2 0 00-1.414.586L3 12z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Calculator Numpad Grid -->
+        <div id="calcNumpad" class="grid grid-cols-4 gap-2 mb-5 hidden">
+          <button onclick="calcClear()" class="keypad-btn py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-base font-extrabold transition shadow-sm">C</button>
+          <button onclick="calcPress('(')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold theme-accent-text border transition shadow-sm">(</button>
+          <button onclick="calcPress(')')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold theme-accent-text border transition shadow-sm">)</button>
+          <button onclick="calcPress('÷')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold theme-accent-text border transition shadow-sm">÷</button>
+
+          <button onclick="calcPress('7')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">7</button>
+          <button onclick="calcPress('8')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">8</button>
+          <button onclick="calcPress('9')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">9</button>
+          <button onclick="calcPress('×')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold theme-accent-text border transition shadow-sm">×</button>
+
+          <button onclick="calcPress('4')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">4</button>
+          <button onclick="calcPress('5')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">5</button>
+          <button onclick="calcPress('6')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">6</button>
+          <button onclick="calcPress('-')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold theme-accent-text border transition shadow-sm">-</button>
+
+          <button onclick="calcPress('1')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">1</button>
+          <button onclick="calcPress('2')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">2</button>
+          <button onclick="calcPress('3')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">3</button>
+          <button onclick="calcPress('+')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold theme-accent-text border transition shadow-sm">+</button>
+
+          <button onclick="calcPress('.')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">.</button>
+          <button onclick="calcPress('0')" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-extrabold border transition shadow-sm">0</button>
+          <button onclick="calcBackspace()" class="keypad-btn py-3 rounded-xl theme-keypad text-base font-bold border transition flex items-center justify-center text-amber-500 shadow-sm" title="Backspace">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2H10.828a2 2 0 00-1.414.586L3 12z"></path>
+            </svg>
+          </button>
+          <button onclick="calcEquals()" class="keypad-btn py-3 rounded-xl theme-accent-btn text-white text-lg font-black border border-indigo-400/30 shadow-md transition">=</button>
+        </div>
+
+        <!-- Primary CTA Generate QR Button -->
+        <button onclick="generateQR()" class="w-full py-4 rounded-2xl theme-accent-btn text-white font-extrabold text-base shadow-xl active:scale-[0.99] transition flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+          </svg>
+          Generate Payment QR Code
+        </button>
+
+      </section>
+    </main>
+
+    <div class="theme-card-bg border border-emerald-500/30 rounded-3xl p-4 sm:p-5 mb-6 backdrop-blur-xl flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-black text-xl border border-emerald-500/30 shrink-0 shadow-sm">
+          ₹
+        </div>
+        <div>
+          <span class="block text-[10px] uppercase font-bold opacity-70 tracking-wider">Today's Earnings</span>
+          <span id="headerTodayTotal" class="text-xl sm:text-2xl font-black font-mono text-emerald-500">₹0.00</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-xs font-bold text-emerald-500 hidden sm:inline">Live POS Total</span>
+      </div>
+    </div>
+
+    <!-- Filtered UPI ID Earnings Card (Clickable to view compact transaction details dialog) -->
+    <div id="filteredUpiEarningsCard" onclick="openFilteredEarningsDetailsModal()" class="hidden theme-card-bg border border-indigo-500/40 hover:border-indigo-500 rounded-3xl p-4 sm:p-5 mb-6 backdrop-blur-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group active:scale-[0.99] select-none" title="Click to view detailed transactions">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="filteredUpiAvatar" class="w-11 h-11 rounded-2xl font-black text-sm flex items-center justify-center shrink-0 border text-white shadow-md bg-indigo-600 border-indigo-400 group-hover:scale-105 transition-transform">
+            --
+          </div>
+          <div class="truncate">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10px] uppercase font-extrabold tracking-wider theme-accent-text flex items-center gap-1">
+                Filtered Payee Earnings
+                <svg class="w-3 h-3 opacity-60 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </span>
+              <span id="filteredUpiTimeBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">All Time</span>
+            </div>
+            <div id="filteredUpiName" class="text-sm font-extrabold truncate mt-0.5">Payee Name</div>
+            <div id="filteredUpiHandle" class="text-[10px] sm:text-xs font-mono opacity-70 truncate">payee@upi</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/40 dark:border-slate-800/60">
+          <div class="text-left sm:text-right">
+            <span class="block text-[10px] uppercase font-bold opacity-60 tracking-wider" id="filteredUpiCount">0 payments</span>
+            <span id="filteredUpiTotal" class="text-xl sm:text-2xl font-black font-mono theme-accent-text">₹0.00</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-semibold opacity-50 hidden md:inline group-hover:opacity-100 transition">View Details</span>
+            <button onclick="event.stopPropagation(); selectCustomUpi('all', 'All Accounts');" class="p-2 rounded-xl theme-sub-bg hover:bg-black/10 dark:hover:bg-white/10 opacity-70 hover:opacity-100 transition border text-xs" style="border-color: var(--border-color);" title="Clear UPI Filter">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="theme-card-bg border rounded-3xl p-5 sm:p-6 backdrop-blur-xl shadow-sm relative z-10">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200/50 dark:border-slate-800/80 mb-5">
+        <div class="flex items-center justify-between gap-3 w-full lg:w-auto">
+          <div>
+            <h2 class="text-xs font-bold flex items-center gap-1.5">
+              <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Transaction History & Logs
+            </h2>
+            <p class="text-[10px] opacity-70">Track and review generated payment requests</p>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button onclick="exportHistoryCSV()" class="p-2 rounded-xl theme-keypad border transition shadow-sm flex items-center justify-center" title="Export CSV">
+              <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+            </button>
+
+            <button onclick="openClearHistoryModal()" class="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 transition shadow-sm flex items-center justify-center" title="Clear Logs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 w-full lg:w-auto flex-wrap sm:flex-nowrap relative z-20">
+          <div class="relative w-full sm:w-40 shrink-0" id="customDropdownTime">
+            <button type="button" onclick="toggleCustomDropdown('customDropdownTimeMenu')" class="w-full theme-sub-bg border rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between gap-1 shadow-sm transition-all focus:outline-none" style="border-color: var(--border-color);">
+              <span class="flex items-center gap-1.5 truncate min-w-0">
+                <svg class="w-3.5 h-3.5 theme-accent-text shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span id="customDropdownTimeLabel" class="truncate">All Time</span>
+              </span>
+              <svg class="w-3 h-3 opacity-50 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            <div id="customDropdownTimeMenu" class="hidden absolute left-0 top-full mt-1.5 w-full sm:w-44 theme-card-bg backdrop-blur-xl border rounded-xl shadow-2xl z-50 py-1 overflow-hidden transition-all duration-150 transform opacity-0 scale-95" style="border-color: var(--border-color);">
+              <div onclick="selectCustomTime('all', 'All Time')" class="px-3 py-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between">
+                <span>All Time</span>
+              </div>
+              <div onclick="selectCustomTime('today', 'Today')" class="px-3 py-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between">
+                <span>Today</span>
+              </div>
+              <div onclick="selectCustomTime('week', 'This Week')" class="px-3 py-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between">
+                <span>This Week</span>
+              </div>
+              <div onclick="selectCustomTime('custom', 'Date Range')" class="px-3 py-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between text-indigo-400 font-bold border-t border-slate-200/40 dark:border-slate-800/60">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  Custom Range...
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Date Range Inputs Container (From Date & To Date) -->
+          <div id="customDateInputContainer" class="hidden flex items-center gap-2 w-full sm:w-auto shrink-0 flex-wrap sm:flex-nowrap">
+            <div class="flex items-center gap-1.5 theme-sub-bg border rounded-xl px-2.5 py-1.5 shadow-sm" style="border-color: var(--border-color);">
+              <label for="customFromDate" class="text-[10px] font-bold opacity-60 uppercase tracking-wider">From:</label>
+              <input type="date" id="customFromDate" onchange="onCustomDateRangeChanged()" class="bg-transparent text-xs font-mono font-semibold focus:outline-none" style="color: var(--text-main);">
+            </div>
+            <div class="flex items-center gap-1.5 theme-sub-bg border rounded-xl px-2.5 py-1.5 shadow-sm" style="border-color: var(--border-color);">
+              <label for="customToDate" class="text-[10px] font-bold opacity-60 uppercase tracking-wider">To:</label>
+              <input type="date" id="customToDate" onchange="onCustomDateRangeChanged()" class="bg-transparent text-xs font-mono font-semibold focus:outline-none" style="color: var(--text-main);">
+            </div>
+          </div>
+
+          <div class="relative w-full sm:w-52 shrink-0" id="customDropdownUpi">
+            <button type="button" onclick="toggleCustomDropdown('customDropdownUpiMenu')" class="w-full theme-sub-bg border rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between gap-1 shadow-sm transition-all focus:outline-none" style="border-color: var(--border-color);">
+              <span class="flex items-center gap-1.5 truncate min-w-0">
+                <svg class="w-3.5 h-3.5 theme-accent-text shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                <span id="customDropdownUpiLabel" class="truncate">All Accounts</span>
+              </span>
+              <svg class="w-3 h-3 opacity-50 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            <div id="customDropdownUpiMenu" class="hidden absolute right-0 top-full mt-1.5 w-full sm:w-64 theme-card-bg backdrop-blur-xl border rounded-xl shadow-2xl z-50 py-1 max-h-56 overflow-y-auto transition-all duration-150 transform opacity-0 scale-95" style="border-color: var(--border-color);">
+            </div>
+          </div>
+
+          <select id="filterTime" class="hidden">
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+          </select>
+
+          <select id="filterUpi" class="hidden">
+            <option value="all">All Merchant Accounts</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="historyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[480px] overflow-y-auto pr-1">
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL: QR Result Overlay Modal -->
+  <div id="qrModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-5 sm:p-6 max-w-sm w-full shadow-2xl relative text-center transform scale-95 transition-transform duration-200" id="qrModalCard" style="border-color: var(--border-color);">
+      
+      <button onclick="closeQrModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+
+      <div class="text-[10px] font-bold uppercase tracking-wider theme-accent-text mb-1">Scan to Pay via Any UPI App</div>
+      <h3 id="modalPayeeName" class="text-base font-extrabold truncate px-4">Payee Name</h3>
+      <p id="modalPayeeUpi" class="text-xs opacity-70 font-mono mb-1 truncate px-4">payee@upi</p>
+      
+      <!-- Date and Time Stamp Display -->
+      <div id="modalDateTimeDisplay" class="text-[10px] font-mono font-semibold opacity-60 mb-2 flex items-center justify-center gap-1">
+        <svg class="w-3 h-3 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span id="modalDateTimeText">--</span>
+      </div>
+
+      <div class="p-3 rounded-2xl theme-sub-bg border inline-block my-1 shadow-inner relative" style="border-color: var(--border-color);">
+        <div id="qrcode" class="flex items-center justify-center bg-white p-3 rounded-xl min-w-[200px] min-h-[200px]"></div>
+      </div>
+
+      <div class="mt-3 mb-4">
+        <span class="text-xs opacity-60 block">Payable Amount</span>
+        <span id="modalAmountDisplay" class="text-3xl font-black font-mono theme-accent-text">₹0.00</span>
+      </div>
+
+      <div class="space-y-2">
+        <button onclick="shareQrCardImage()" class="w-full py-3 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+          Share QR Payment Card
+        </button>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="shareViaWhatsapp()" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition" title="Share via WhatsApp">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+            <span>WhatsApp</span>
+          </button>
+          <button onclick="downloadQrImage()" class="py-2.5 rounded-xl theme-keypad border text-xs font-semibold flex items-center justify-center gap-1.5 transition" style="border-color: var(--border-color);">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Save Image
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="copyQrLink()" class="py-2.5 rounded-xl theme-keypad border text-xs font-semibold flex items-center justify-center gap-1.5 transition" style="border-color: var(--border-color);">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            Copy Link
+          </button>
+          <button onclick="printReceipt()" class="py-2.5 rounded-xl theme-keypad border text-xs font-semibold flex items-center justify-center gap-1.5 transition" style="border-color: var(--border-color);">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            Print Receipt
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: Add Payee Modal -->
+  <div id="addModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="addModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold">Add New Payee Profile</h3>
+        <button onclick="closeAddModal()" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Payee Business Name *</label>
+          <input type="text" id="newName" placeholder="e.g. Metro Supermarket" class="w-full theme-sub-bg border rounded-xl p-2.5 focus:outline-none" style="border-color: var(--border-color);">
+        </div>
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Destination UPI ID *</label>
+          <input type="text" id="newUpi" placeholder="e.g. metro@okicici" class="w-full theme-sub-bg border rounded-xl p-2.5 font-mono focus:outline-none" style="border-color: var(--border-color);">
+        </div>
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Mobile Number (Optional)</label>
+          <input type="tel" id="newPhone" placeholder="e.g. 9876543210" class="w-full theme-sub-bg border rounded-xl p-2.5 font-mono focus:outline-none" style="border-color: var(--border-color);">
+        </div>
+      </div>
+      <div class="flex items-center gap-2 mt-5">
+        <button onclick="closeAddModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="saveNewMerchant()" class="flex-1 py-2.5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Save Payee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Payee Modal -->
+  <div id="editModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="editModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold">Edit Payee Account</h3>
+        <button onclick="closeEditModal()" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+      <input type="hidden" id="editMerchantId">
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Payee Business Name *</label>
+          <input type="text" id="editName" placeholder="e.g. Metro Supermarket" class="w-full theme-sub-bg border rounded-xl p-2.5 focus:outline-none" style="border-color: var(--border-color);">
+        </div>
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Destination UPI ID *</label>
+          <input type="text" id="editUpi" placeholder="e.g. metro@okicici" class="w-full theme-sub-bg border rounded-xl p-2.5 font-mono focus:outline-none" style="border-color: var(--border-color);">
+        </div>
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Mobile Number (Optional)</label>
+          <input type="tel" id="editPhone" placeholder="e.g. 9876543210" class="w-full theme-sub-bg border rounded-xl p-2.5 font-mono focus:outline-none" style="border-color: var(--border-color);">
+        </div>
+      </div>
+      <div class="flex items-center gap-2 mt-5">
+        <button onclick="closeEditModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="saveEditMerchant()" class="flex-1 py-2.5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Single Delete Payee Modal -->
+  <div id="deletePayeeModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200 text-center" id="deletePayeeModalCard" style="border-color: var(--border-color);">
+      <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-3 border border-red-500/20">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </div>
+      <h3 class="text-base font-bold mb-1">Delete Payee Account?</h3>
+      <p class="text-xs opacity-70 mb-1">Are you sure you want to delete <span id="deletePayeeName" class="font-bold text-red-500">--</span>?</p>
+      <p id="deletePayeeUpi" class="text-xs font-mono opacity-50 mb-5">--</p>
+
+      <div class="flex items-center gap-2">
+        <button onclick="closeDeletePayeeModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="confirmDeletePayee()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Bulk Add Payee Modal -->
+  <div id="bulkAddModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-lg w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="bulkAddModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold">Bulk Add Payee Accounts</h3>
+        <button onclick="closeBulkAddModal()" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+      <p class="text-xs opacity-70 mb-3">Paste multiple payee entries below (one per line). Format: <code class="font-mono bg-black/10 dark:bg-white/10 px-1 py-0.5 rounded">UPI_ID, Business Name, Phone</code></p>
+      
+      <textarea id="bulkTextarea" rows="6" placeholder="store1@upi, Store One, 9876543210&#10;store2@upi, Store Two, 9876543211" class="w-full theme-sub-bg border rounded-xl p-3 font-mono text-xs focus:outline-none mb-4" style="border-color: var(--border-color);"></textarea>
+
+      <div class="flex items-center gap-2">
+        <button onclick="closeBulkAddModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="saveBulkMerchants()" class="flex-1 py-2.5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Import Accounts</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Reset UPI Accounts Confirm Modal -->
+  <div id="resetUpiModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200 text-center" id="resetUpiModalCard" style="border-color: var(--border-color);">
+      <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-3 border border-red-500/20">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <h3 class="text-base font-bold mb-1">Reset All Payee Accounts?</h3>
+      <p class="text-xs opacity-70 mb-5">This action will delete all payee profiles saved in the terminal. This cannot be undone.</p>
+
+      <div class="flex items-center gap-2">
+        <button onclick="closeResetUpiModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="confirmResetAllMerchants()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md">Yes, Reset All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Single Delete Transaction Log Modal -->
+  <div id="deleteLogModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200 text-center" id="deleteLogModalCard" style="border-color: var(--border-color);">
+      <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-3 border border-red-500/20">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </div>
+      <h3 class="text-base font-bold mb-1">Delete Transaction Log?</h3>
+      <p class="text-xs opacity-70 mb-1">Are you sure you want to delete log entry for</p>
+      <p id="deleteLogLabel" class="text-xs font-bold text-red-500 mb-5">--</p>
+
+      <div class="flex items-center gap-2">
+        <button onclick="closeDeleteLogModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="confirmDeleteLog()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md">Delete Log</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Compact Filtered Payee Details Dialog -->
+  <div id="filteredEarningsDetailsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl relative transform scale-95 transition-transform duration-200 flex flex-col max-h-[90vh]" id="filteredEarningsDetailsModalCard" style="border-color: var(--border-color);">
+      <!-- Dialog Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200/40 dark:border-slate-800/60 mb-3 shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div id="compactModalAvatar" class="w-9 h-9 rounded-xl font-black text-xs flex items-center justify-center shrink-0 border text-white shadow bg-indigo-600 border-indigo-400">
+            --
+          </div>
+          <div class="truncate">
+            <h3 id="compactModalPayeeName" class="text-sm font-extrabold truncate">Payee Name</h3>
+            <p id="compactModalPayeeUpi" class="text-[10px] font-mono opacity-70 truncate">payee@upi</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button onclick="shareFilteredEarningsSummary()" class="p-1.5 rounded-xl hover:bg-black/10 dark:hover:bg-white/10 theme-accent-text opacity-80 hover:opacity-100 transition" title="Share Summary">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+          </button>
+          <button onclick="closeFilteredEarningsDetailsModal()" class="p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-70 hover:opacity-100 transition">✕</button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Stats Bar -->
+      <div class="theme-sub-bg border rounded-2xl p-2.5 mb-3 flex items-center justify-between shrink-0" style="border-color: var(--border-color);">
+        <span id="compactModalCount" class="text-xs font-semibold opacity-70 pl-1">0 transactions</span>
+        <span id="compactModalTotal" class="text-sm sm:text-base font-black font-mono text-emerald-500">₹0.00</span>
+      </div>
+
+      <!-- Compact Transaction List Container -->
+      <div class="flex-1 overflow-y-auto pr-1 space-y-1.5" id="compactTransactionList">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Dialog Footer -->
+      <div class="pt-3 border-t border-slate-200/40 dark:border-slate-800/60 mt-3 shrink-0 flex items-center justify-between">
+        <span class="text-[10px] opacity-50 hidden sm:inline">Tip: Click ✏️ to edit or 🗑️ to delete</span>
+        <div class="flex items-center gap-2">
+          <button onclick="shareFilteredEarningsSummary()" class="py-2 px-3.5 rounded-xl theme-keypad border text-xs font-semibold flex items-center justify-center gap-1.5 transition hover:border-indigo-500/50 shadow-sm" style="border-color: var(--border-color);" title="Share Earnings Summary">
+            <svg class="w-3.5 h-3.5 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+            <span>Share</span>
+          </button>
+          <button onclick="closeFilteredEarningsDetailsModal()" class="py-2 px-5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Transaction Log Modal -->
+  <div id="editLogModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-5 max-w-sm w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="editLogModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/40 dark:border-slate-800/60">
+        <h3 class="text-sm font-bold flex items-center gap-1.5">
+          <svg class="w-4 h-4 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          Edit Transaction Amount
+        </h3>
+        <button onclick="closeEditLogModal()" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+      <input type="hidden" id="editLogId">
+      
+      <div class="space-y-3 text-xs mb-4">
+        <div>
+          <span class="block text-[10px] opacity-60 uppercase font-semibold">Payee Account</span>
+          <div id="editLogPayeeName" class="text-xs font-bold mt-0.5">--</div>
+          <div id="editLogPayeeUpi" class="text-[10px] font-mono opacity-70">--</div>
+        </div>
+
+        <div>
+          <label class="block font-semibold opacity-70 mb-1">Transaction Amount (₹) *</label>
+          <input type="number" step="0.01" min="0.01" id="editLogAmount" placeholder="e.g. 500" class="w-full theme-sub-bg border rounded-xl p-2.5 font-mono text-sm font-bold focus:outline-none" style="border-color: var(--border-color); color: var(--text-main);">
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="closeEditLogModal()" class="flex-1 py-2 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="saveEditLog()" class="flex-1 py-2 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Update Amount</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Clear History Confirm Modal -->
+  <div id="clearHistoryModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200 text-center" id="clearHistoryModalCard" style="border-color: var(--border-color);">
+      <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mx-auto mb-3 border border-red-500/20">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </div>
+      <h3 class="text-base font-bold mb-1">Clear Transaction History?</h3>
+      <p class="text-xs opacity-70 mb-5">Are you sure you want to wipe all transaction logs from memory?</p>
+
+      <div class="flex items-center gap-2">
+        <button onclick="closeClearHistoryModal()" class="flex-1 py-2.5 rounded-xl theme-sub-bg text-xs font-semibold">Cancel</button>
+        <button onclick="confirmClearHistory()" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md">Wipe History</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: About App Modal -->
+  <div id="aboutModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="aboutModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl p-1 border flex items-center justify-center shadow-sm" style="background-color: var(--badge-bg); border-color: var(--border-color);">
+            <img src="https://cdn-icons-png.flaticon.com/512/2313/2313039.png" alt="Paypulse Logo" class="w-full h-full object-contain">
+          </div>
+          <div>
+            <h3 class="text-base font-bold leading-tight">Paypulse v10.01</h3>
+            <p class="text-[10px] opacity-70">POS Terminal Edition</p>
+          </div>
+        </div>
+        <button onclick="closeAboutModal()" class="p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-2xl border text-center shadow-sm" style="background-color: var(--badge-bg); border-color: var(--border-color);">
+          <div class="text-[10px] uppercase font-bold tracking-wider opacity-60">Developer Authorization</div>
+          <div class="text-xs font-extrabold theme-accent-text mt-1">Developed By: ARUN KUMAR SC, for Arun Traders</div>
+          <div class="text-[11px] font-semibold opacity-90 mt-1 flex items-center justify-center gap-1">
+            <svg class="w-3.5 h-3.5 theme-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            Contact: <a href="tel:8105104599" class="font-bold underline hover:opacity-100">8105104599</a>
+          </div>
+          <div class="text-[9px] opacity-50 mt-0.5">All Rights Reserved © 2026</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="theme-sub-bg p-2.5 rounded-xl border" style="border-color: var(--border-color);">
+            <div class="text-[9px] uppercase font-bold opacity-60">App Version</div>
+            <div class="text-xs font-bold font-mono theme-accent-text mt-0.5">Paypulse v10.01</div>
+          </div>
+          <div class="theme-sub-bg p-2.5 rounded-xl border" style="border-color: var(--border-color);">
+            <div class="text-[9px] uppercase font-bold opacity-60">Build ID</div>
+            <div class="text-xs font-bold font-mono opacity-80 mt-0.5">2026.09.26-v10.01</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <button onclick="closeAboutModal()" class="w-full py-2.5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="upiFileInput" accept=".json,.csv" onchange="handleUpiFileImport(event)" class="hidden">
+
+  <!-- MODAL: PWA Install Guide & Prompt Modal -->
+  <div id="installGuideModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="installGuideModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl p-1 border flex items-center justify-center shrink-0" style="background-color: var(--badge-bg); border-color: var(--border-color);">
+            <img src="https://cdn-icons-png.flaticon.com/512/2313/2313039.png" alt="Paypulse Logo" class="w-full h-full object-contain">
+          </div>
+          <h3 class="text-base font-bold">Install Paypulse POS</h3>
+        </div>
+        <button onclick="closeInstallGuideModal()" class="p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+
+      <div id="installNativePromptContainer" class="hidden mb-4 p-3.5 rounded-2xl theme-sub-bg border text-center" style="border-color: var(--border-color);">
+        <p class="text-xs font-bold mb-2 theme-accent-text">Direct 1-Tap App Install Ready!</p>
+        <button onclick="execNativePwaInstall()" class="w-full py-3 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-lg flex items-center justify-center gap-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/2313/2313039.png" class="w-4 h-4 object-contain">
+          <span>Click Here to Install Now</span>
+        </button>
+      </div>
+
+      <div id="iframeNoticeContainer" class="hidden mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs">
+        <div class="font-bold mb-1">Embedded Frame Detected</div>
+        <p class="opacity-90 mb-2">PWA installation is restricted inside embedded browser frames. Open in full window for direct install:</p>
+        <button onclick="openInFullWindow()" class="w-full py-2 px-3 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm">
+          <span>Open in Full Window</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs mb-5">
+        <div class="theme-sub-bg p-3 rounded-2xl border" style="border-color: var(--border-color);">
+          <div class="font-bold text-xs mb-1">Android (Chrome / Edge / Samsung)</div>
+          <p class="opacity-80">Tap the 3-dots menu icon (⋮) at top right and select <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong>.</p>
+        </div>
+        <div class="theme-sub-bg p-3 rounded-2xl border" style="border-color: var(--border-color);">
+          <div class="font-bold text-xs mb-1">iOS (Safari)</div>
+          <p class="opacity-80">Tap the Share button <span class="font-bold">⎋</span> at the bottom of Safari and select <strong>"Add to Home Screen"</strong>.</p>
+        </div>
+        <div class="theme-sub-bg p-3 rounded-2xl border" style="border-color: var(--border-color);">
+          <div class="font-bold text-xs mb-1">Desktop (Chrome / Edge)</div>
+          <p class="opacity-80">Click the <strong>Install App icon</strong> located on the right side of the address bar.</p>
+        </div>
+      </div>
+
+      <button onclick="closeInstallGuideModal()" class="w-full py-2.5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Got It</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Cloud Backup & Sync Info Modal -->
+  <div id="cloudBackupModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+    <div class="theme-card-bg border rounded-3xl p-6 max-w-md w-full shadow-2xl relative transform scale-95 transition-transform duration-200" id="cloudBackupModalCard" style="border-color: var(--border-color);">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold leading-tight">Cloud Backup & Sync</h3>
+            <p class="text-[10px] opacity-70">Automatic Real-Time Multi-Device Sync</p>
+          </div>
+        </div>
+        <button onclick="closeCloudBackupModal()" class="p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 opacity-60">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs mb-5">
+        <div class="p-3.5 rounded-2xl theme-sub-bg border flex items-center justify-between" style="border-color: var(--border-color);">
+          <div>
+            <div class="text-[10px] uppercase font-bold opacity-60">Sync Status</div>
+            <div id="cloudModalStatusText" class="text-xs font-extrabold text-emerald-500 mt-0.5 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Connected & Synced
+            </div>
+          </div>
+          <button onclick="forceCloudSyncNow()" class="px-3 py-1.5 rounded-xl theme-accent-btn text-white text-[11px] font-bold shadow-sm active:scale-95 transition">
+            Sync Now
+          </button>
+        </div>
+
+        <div class="p-3 rounded-2xl theme-sub-bg border" style="border-color: var(--border-color);">
+          <div class="text-[10px] uppercase font-bold opacity-60 mb-1">Active Cloud Terminal ID</div>
+          <div class="flex items-center justify-between gap-2">
+            <code id="cloudUserIdDisplay" class="font-mono text-[10px] opacity-90 break-all select-all">Authenticating...</code>
+            <button onclick="copyCloudUserId()" class="px-2.5 py-1 rounded-lg theme-keypad border text-[10px] font-bold shrink-0" style="border-color: var(--border-color);">Copy</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="theme-sub-bg p-2.5 rounded-xl border" style="border-color: var(--border-color);">
+            <div class="text-[9px] uppercase font-bold opacity-60">Backed-up Payees</div>
+            <div id="cloudPayeeCount" class="text-sm font-black font-mono theme-accent-text mt-0.5">0</div>
+          </div>
+          <div class="theme-sub-bg p-2.5 rounded-xl border" style="border-color: var(--border-color);">
+            <div class="text-[9px] uppercase font-bold opacity-60">Backed-up Logs</div>
+            <div id="cloudLogsCount" class="text-sm font-black font-mono text-emerald-500 mt-0.5">0</div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="closeCloudBackupModal()" class="w-full py-2.5 rounded-xl theme-accent-btn text-white text-xs font-bold shadow-md">Done</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    const RTDB_URL = "https://paypulse-a855a-default-rtdb.firebaseio.com";
+    const rawAppId = typeof __app_id !== 'undefined' ? __app_id : 'paypulse-a855a';
+    const appId = String(rawAppId).replace(/[.#$\[\]]/g, '_');
+    const baseConfig = typeof __firebase_config !== 'undefined'
+      ? JSON.parse(__firebase_config)
+      : { projectId: "paypulse-a855a" };
+
+    const firebaseConfig = {
+      ...baseConfig,
+      databaseURL: RTDB_URL
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    let currentUser = null;
+    let currentTheme = 'platinum';
+    let unsubMerchants = null;
+    let unsubHistory = null;
+    let useRestFallback = false;
+
+    let merchants = [];
+    let selectedMerchant = null;
+    let pendingDeletePayeeId = null;
+    let pendingDeleteLogId = null;
+    let pendingEditLogId = null;
+    let history = [];
+    let terminalMode = 'quick'; // 'quick' | 'calc'
+    let calcExpression = '';
+    let soundEnabled = true;
+    let deferredPrompt = null;
+    let qrInstance = null;
+    let isStandaloneMode = false;
+
+    const DEFAULT_MERCHANTS = [
+      { id: '1', name: 'S C ARUN KUMAR', upi: '8105104599@ybl', phone: '8105104599' },
+      { id: '2', name: 'ARUN TRADERS', upi: 'Q065025025@ybl', phone: '8105104599' },
+      { id: '3', name: 'THALLAM Traders', upi: 'paytmqr2810050501011nnseug7k3xi@paytm', phone: '9448769469' },
+      { id: '4', name: 'SP VENKATESH', upi: '7981375276@ybl', phone: '7981375276' },
+      { id: '5', name: 'SUSHMITHA SALES CO', upi: '303805429039165@cnrb', phone: '9035442508' },
+      { id: '6', name: 'THALLAM General Stores', upi: '6362005814@kbl', phone: '9036334454' },
+      { id: '7', name: 'Vijayalakshmi M', upi: '9945764810@Kotak', phone: '9945764810' },
+      { id: '8', name: 'ASHWIN MARKETING', upi: 'Q31960982@ybl', phone: '9986132310' },
+      { id: '9', name: 'KAVYA LM', upi: '9620504256@ybl', phone: '9620504256' }
+    ];
+
+    const AVATAR_PALETTE = [
+      { bgStyle: 'background-color: #2563eb; color: #ffffff;' },
+      { bgStyle: 'background-color: #059669; color: #ffffff;' },
+      { bgStyle: 'background-color: #7c3aed; color: #ffffff;' },
+      { bgStyle: 'background-color: #f97316; color: #ffffff;' },
+      { bgStyle: 'background-color: #db2777; color: #ffffff;' },
+      { bgStyle: 'background-color: #0d9488; color: #ffffff;' },
+      { bgStyle: 'background-color: #d97706; color: #ffffff;' },
+      { bgStyle: 'background-color: #e11d48; color: #ffffff;' },
+      { bgStyle: 'background-color: #4f46e5; color: #ffffff;' }
+    ];
+
+    function getAvatarBgStyle(index, name) {
+      if (index !== undefined && index >= 0) {
+        return AVATAR_PALETTE[index % AVATAR_PALETTE.length].bgStyle;
+      }
+      let hash = 0;
+      for (let i = 0; i < (name || '').length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length].bgStyle;
+    }
+
+    function formatIndianCurrency(num) {
+      if (isNaN(num) || num === null || num === undefined) return '0.00';
+      return new Intl.NumberFormat('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(num);
+    }
+
+    function formatInputValue(str) {
+      if (!str) return '0';
+      const cleanStr = str.toString().replace(/,/g, '');
+      const parts = cleanStr.split('.');
+      let integerPart = parts[0];
+      const decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+      
+      if (integerPart) {
+        let lastThree = integerPart.substring(integerPart.length - 3);
+        let otherDigits = integerPart.substring(0, integerPart.length - 3);
+        if (otherDigits !== '') {
+          lastThree = ',' + lastThree;
+        }
+        integerPart = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+      }
+      return (integerPart || '0') + decimalPart;
+    }
+
+    function playBeep() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    window.toggleSound = function () {
+      soundEnabled = !soundEnabled;
+      showToast(soundEnabled ? '🔊 Audio feedback enabled' : '🔇 Audio feedback muted');
+    };
+
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-xl bg-slate-900/90 text-white text-xs font-semibold shadow-xl backdrop-blur-md border border-slate-700/50 pointer-events-auto animate-bounce';
+      toast.innerText = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 2500);
+    }
+
+    function updateCloudStatusUI(text, isOnline) {
+      const headerDot = document.getElementById('headerCloudDot');
+      const headerText = document.getElementById('headerCloudStatusText');
+      const menuStatus = document.getElementById('cloudSyncMenuStatus');
+      const modalStatus = document.getElementById('cloudModalStatusText');
+      const userIdDisplay = document.getElementById('cloudUserIdDisplay');
+      const payeeCountEl = document.getElementById('cloudPayeeCount');
+      const logsCountEl = document.getElementById('cloudLogsCount');
+
+      if (headerDot) {
+        headerDot.className = `w-2 h-2 rounded-full shrink-0 ${isOnline ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}`;
+      }
+      if (headerText) headerText.innerText = text;
+      if (menuStatus) {
+        menuStatus.innerText = text;
+        menuStatus.className = `text-[9px] font-bold ${isOnline ? 'text-emerald-500' : 'text-amber-500'}`;
+      }
+      if (modalStatus) {
+        modalStatus.innerHTML = `<span class="w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}"></span> ${text}`;
+        modalStatus.className = `text-xs font-extrabold mt-0.5 flex items-center gap-1.5 ${isOnline ? 'text-emerald-500' : 'text-amber-500'}`;
+      }
+      if (userIdDisplay) {
+        userIdDisplay.innerText = currentUser ? currentUser.uid : (useRestFallback ? 'paypulse-a855a-shared' : 'Authenticating...');
+      }
+      if (payeeCountEl) payeeCountEl.innerText = merchants.length;
+      if (logsCountEl) logsCountEl.innerText = history.length;
+    }
+
+    function applyThemeUI(t) {
+      currentTheme = t;
+      document.documentElement.setAttribute('data-theme', t);
+      document.querySelectorAll('.theme-indicator').forEach(el => el.innerText = '');
+      const activeInd = document.getElementById(`theme-indicator-${t}`);
+      if (activeInd) activeInd.innerText = '✓ Active';
+    }
+
+    window.setTerminalMode = function (mode) {
+      terminalMode = mode;
+      const tabQuick = document.getElementById('tabQuickMode');
+      const tabCalc = document.getElementById('tabCalcMode');
+      const quickPreset = document.getElementById('quickPresetRow');
+      const quickNum = document.getElementById('quickNumpad');
+      const calcNum = document.getElementById('calcNumpad');
+      const calcExprDisplay = document.getElementById('calcExpressionDisplay');
+      const amountInput = document.getElementById('amount');
+
+      const currentRawVal = amountInput.value.replace(/,/g, '');
+      const evaluatedNum = safeEvalCalc(calcExpression) || parseFloat(currentRawVal) || 0;
+
+      if (mode === 'quick') {
+        tabQuick.className = "flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 theme-accent-btn text-white shadow-md";
+        tabCalc.className = "flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 opacity-60 hover:opacity-100";
+        quickPreset.classList.remove('hidden');
+        quickNum.classList.remove('hidden');
+        calcNum.classList.add('hidden');
+        calcExprDisplay.classList.add('hidden');
+        
+        calcExpression = evaluatedNum > 0 ? evaluatedNum.toString() : '';
+        amountInput.value = evaluatedNum > 0 
+          ? (evaluatedNum % 1 === 0 ? formatInputValue(evaluatedNum.toString()) : formatIndianCurrency(evaluatedNum))
+          : '0';
+      } else {
+        tabCalc.className = "flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 theme-accent-btn text-white shadow-md";
+        tabQuick.className = "flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 opacity-60 hover:opacity-100";
+        quickPreset.classList.add('hidden');
+        quickNum.classList.add('hidden');
+        calcNum.classList.remove('hidden');
+        calcExprDisplay.classList.remove('hidden');
+        
+        if (evaluatedNum > 0 && !calcExpression) {
+          calcExpression = evaluatedNum.toString();
+        }
+        updateCalcUI();
+      }
+      playBeep();
+    };
+
+    window.numpadPress = function (digit) {
+      playBeep();
+      const amountInput = document.getElementById('amount');
+      let currentVal = amountInput.value.replace(/,/g, '');
+
+      if (currentVal === '0' && digit !== '.') {
+        currentVal = digit;
+      } else {
+        if (digit === '.' && currentVal.includes('.')) return;
+        currentVal += digit;
+      }
+
+      amountInput.value = formatInputValue(currentVal);
+      document.getElementById('amountError').classList.add('hidden');
+    };
+
+    window.addPresetAmount = function (preset) {
+      playBeep();
+      const amountInput = document.getElementById('amount');
+      let currentVal = parseFloat(amountInput.value.replace(/,/g, '')) || 0;
+      currentVal += preset;
+      amountInput.value = formatInputValue(currentVal.toString());
+      document.getElementById('amountError').classList.add('hidden');
+    };
+
+    window.clearAmount = function () {
+      playBeep();
+      const amountInput = document.getElementById('amount');
+      let rawStr = amountInput.value.replace(/,/g, '');
+      if (rawStr.length > 1) {
+        rawStr = rawStr.slice(0, -1);
+      } else {
+        rawStr = '0';
+      }
+      amountInput.value = formatInputValue(rawStr);
+    };
+
+    function resetAmountToZero() {
+      const amountInput = document.getElementById('amount');
+      if (amountInput) amountInput.value = '0';
+      calcExpression = '';
+      const displayExpr = document.getElementById('calcExpressionDisplay');
+      if (displayExpr) displayExpr.innerText = '0';
+      const err = document.getElementById('amountError');
+      if (err) err.classList.add('hidden');
+    }
+
+    window.calcPress = function (val) {
+      playBeep();
+      const operators = ['+', '-', '×', '÷'];
+      if (operators.includes(val) && operators.includes(calcExpression.slice(-1))) {
+        calcExpression = calcExpression.slice(0, -1) + val;
+      } else {
+        calcExpression += val;
+      }
+      updateCalcUI();
+    };
+
+    window.calcClear = function () {
+      playBeep();
+      calcExpression = '';
+      document.getElementById('amount').value = '0';
+      updateCalcUI();
+    };
+
+    window.calcBackspace = function () {
+      playBeep();
+      if (calcExpression.length > 0) {
+        calcExpression = calcExpression.slice(0, -1);
+      }
+      updateCalcUI();
+    };
+
+    function safeEvalCalc(expr) {
+      try {
+        if (!expr) return 0;
+        let sanitized = expr.replace(/×/g, '*').replace(/÷/g, '/');
+        sanitized = sanitized.replace(/(\b)0+(?=\d)/g, '$1');
+        sanitized = sanitized.replace(/[+\-*\/.]+$/, '');
+        if (!sanitized) return 0;
+        
+        const openParen = (sanitized.match(/\(/g) || []).length;
+        const closeParen = (sanitized.match(/\)/g) || []).length;
+        if (openParen > closeParen) {
+          sanitized += ')'.repeat(openParen - closeParen);
+        }
+        
+        const result = Function('"use strict"; return (' + sanitized + ')')();
+        return isNaN(result) || !isFinite(result) ? 0 : result;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function updateCalcUI() {
+      const displayExpr = document.getElementById('calcExpressionDisplay');
+      const amountInput = document.getElementById('amount');
+      displayExpr.innerText = calcExpression || '0';
+
+      const total = safeEvalCalc(calcExpression);
+      if (total === 0) {
+        amountInput.value = '0';
+      } else {
+        const isInteger = total % 1 === 0;
+        amountInput.value = isInteger ? formatInputValue(total.toString()) : formatIndianCurrency(total);
+      }
+    }
+
+    window.calcEquals = function () {
+      playBeep();
+      const total = safeEvalCalc(calcExpression);
+      calcExpression = total.toString();
+      updateCalcUI();
+    };
+
+    function saveMerchants(data) {
+      updateCloudStatusUI('Syncing...', true);
+      if (useRestFallback || !currentUser) {
+        fetch(`${RTDB_URL}/artifacts/${appId}/public/data/merchants.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ list: data, updatedAt: new Date().toISOString() })
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            updateCloudStatusUI('Synced ✓', true);
+          })
+          .catch((err) => {
+            console.error('REST sync error:', err);
+            updateCloudStatusUI('Sync Error', false);
+          });
+        return;
+      }
+      const dbRef = ref(db, `artifacts/${appId}/public/data/merchants`);
+      set(dbRef, { list: data, updatedAt: new Date().toISOString() })
+        .then(() => updateCloudStatusUI('Synced ✓', true))
+        .catch((err) => {
+          console.error('Error syncing payees to cloud:', err);
+          useRestFallback = true;
+          saveMerchants(data);
+        });
+    }
+
+    function loadMerchants() {
+      return merchants;
+    }
+
+    function renderMerchantList(filter = '') {
+      const container = document.getElementById('upiList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = (filter || '').toLowerCase().trim();
+      const filtered = merchants.filter(m => 
+        m.name.toLowerCase().includes(query) || 
+        m.upi.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 opacity-60 text-xs">
+            No payee accounts match your search.
+          </div>
+        `;
+        return;
+      }
+
+      const isSearching = query.length > 0;
+
+      filtered.forEach((m, idx) => {
+        const isSelected = selectedMerchant && selectedMerchant.id === m.id;
+        const card = document.createElement('div');
+        
+        card.className = `p-2 sm:p-2.5 rounded-xl border transition-all duration-200 flex items-center justify-between cursor-pointer relative ${
+          isSelected 
+            ? 'theme-card-bg border-indigo-500 shadow-sm ring-1 ring-indigo-500/40' 
+            : 'theme-card-bg hover:border-slate-400 dark:hover:border-slate-700'
+        }`;
+        
+        if (isSelected) {
+          card.style.borderColor = 'var(--accent-primary)';
+          card.style.backgroundColor = 'var(--badge-bg)';
+        } else {
+          card.style.borderColor = 'var(--border-color)';
+        }
+
+        card.onclick = (e) => {
+          if (e.target.closest('.card-action-btn') || e.target.closest('[id^="cardMenu-"]')) return;
+          selectMerchant(m.id);
+        };
+
+        const initials = m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'P';
+        const avatarStyle = getAvatarBgStyle(idx, m.name);
+
+        const openUpwards = filtered.length > 2 && idx >= filtered.length - 2;
+        const menuPositionClass = openUpwards ? 'bottom-full mb-1' : 'top-full mt-1';
+
+        const realIndex = merchants.findIndex(item => item.id === m.id);
+        const canMoveUp = !isSearching && realIndex > 0;
+        const canMoveDown = !isSearching && realIndex < merchants.length - 1;
+
+        card.innerHTML = `
+          <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 pr-1">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl font-black text-xs flex items-center justify-center shrink-0 shadow-sm" style="${avatarStyle}">
+              ${initials}
+            </div>
+            <div class="truncate">
+              <div class="text-xs font-bold truncate flex items-center gap-1">
+                <span class="truncate">${m.name}</span>
+                ${isSelected ? '<span class="text-[10px] text-indigo-500 font-black">✓</span>' : ''}
+              </div>
+              <div class="text-[10px] font-mono opacity-70 truncate mt-0.5">${m.upi}</div>
+            </div>
+          </div>
+
+          <div class="relative shrink-0 ml-1">
+            <button onclick="toggleCardMenu(event, '${m.id}')" class="card-action-btn p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 opacity-70 hover:opacity-100 transition" title="Options">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            </button>
+            <div id="cardMenu-${m.id}" class="hidden absolute right-0 ${menuPositionClass} w-32 theme-card-bg border rounded-xl shadow-2xl z-40 p-1 space-y-0.5 text-xs" style="border-color: var(--border-color);">
+              ${canMoveUp ? `
+                <button onclick="moveMerchantOrder(event, '${m.id}', -1)" class="w-full px-2.5 py-1.5 rounded-lg text-left hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-2 font-semibold">
+                  <svg class="w-3.5 h-3.5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                  Move Up
+                </button>
+              ` : ''}
+              ${canMoveDown ? `
+                <button onclick="moveMerchantOrder(event, '${m.id}', 1)" class="w-full px-2.5 py-1.5 rounded-lg text-left hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-2 font-semibold">
+                  <svg class="w-3.5 h-3.5 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  Move Down
+                </button>
+              ` : ''}
+              ${(canMoveUp || canMoveDown) ? '<div class="border-t my-0.5 opacity-20" style="border-color: var(--border-color);"></div>' : ''}
+              <button onclick="handleCardEdit(event, '${m.id}')" class="w-full px-2.5 py-1.5 rounded-lg text-left hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-2 theme-accent-text font-semibold">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Edit
+              </button>
+              <button onclick="handleCardDelete(event, '${m.id}')" class="w-full px-2.5 py-1.5 rounded-lg text-left hover:bg-red-500/10 text-red-500 flex items-center gap-2 font-semibold">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.toggleCardMenu = function (e, id) {
+      e.stopPropagation();
+      const targetMenu = document.getElementById(`cardMenu-${id}`);
+      const allMenus = document.querySelectorAll('[id^="cardMenu-"]');
+      allMenus.forEach(m => {
+        if (m !== targetMenu) m.classList.add('hidden');
+      });
+      if (targetMenu) {
+        targetMenu.classList.toggle('hidden');
+      }
+    };
+
+    window.moveMerchantOrder = function (e, id, direction) {
+      e.stopPropagation();
+      closeAllCardMenus();
+      const idx = merchants.findIndex(m => m.id === id);
+      if (idx === -1) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= merchants.length) return;
+
+      const temp = merchants[idx];
+      merchants[idx] = merchants[targetIdx];
+      merchants[targetIdx] = temp;
+
+      saveMerchants(merchants);
+      renderMerchantList(document.getElementById('merchantSearch')?.value || '');
+      populateHistoryUpiFilter();
+      playBeep();
+    };
+
+    window.handleCardEdit = function (e, id) {
+      e.stopPropagation();
+      closeAllCardMenus();
+      openEditModal(id);
+    };
+
+    window.handleCardDelete = function (e, id) {
+      e.stopPropagation();
+      closeAllCardMenus();
+      openDeletePayeeModal(id);
+    };
+
+    function closeAllCardMenus() {
+      document.querySelectorAll('[id^="cardMenu-"]').forEach(m => m.classList.add('hidden'));
+    }
+
+    function selectMerchant(id) {
+      const found = merchants.find(m => m.id === id);
+      if (!found) return;
+      selectedMerchant = found;
+
+      document.getElementById('activeName').innerText = found.name;
+      document.getElementById('activeUpi').innerText = found.upi;
+      const initials = found.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'P';
+      const activeAvatar = document.getElementById('activeAvatar');
+      activeAvatar.innerText = initials;
+
+      const idx = merchants.findIndex(m => m.id === id);
+      activeAvatar.setAttribute('style', getAvatarBgStyle(idx, found.name));
+
+      renderMerchantList(document.getElementById('merchantSearch')?.value || '');
+
+      const activeCard = document.getElementById('activeMerchantCard');
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        activeCard.classList.add('ring-2', 'ring-indigo-500', 'scale-[1.01]');
+        setTimeout(() => activeCard.classList.remove('ring-2', 'ring-indigo-500', 'scale-[1.01]'), 1200);
+      }
+      playBeep();
+    }
+
+    window.filterMerchants = function () {
+      const q = document.getElementById('merchantSearch').value;
+      renderMerchantList(q);
+    };
+
+    window.openEditModal = function (id) {
+      const m = merchants.find(item => item.id === id);
+      if (!m) return;
+      document.getElementById('editMerchantId').value = m.id;
+      document.getElementById('editName').value = m.name;
+      document.getElementById('editUpi').value = m.upi;
+      document.getElementById('editPhone').value = m.phone || '';
+      toggleModal('editModal', true);
+    };
+
+    window.closeEditModal = function () { toggleModal('editModal', false); };
+
+    window.saveEditMerchant = function () {
+      const id = document.getElementById('editMerchantId').value;
+      const name = document.getElementById('editName').value.trim();
+      const upi = document.getElementById('editUpi').value.trim();
+      const phone = document.getElementById('editPhone').value.trim();
+
+      if (!name || !upi) {
+        showToast('⚠️ Please enter Name and UPI ID');
+        return;
+      }
+
+      const idx = merchants.findIndex(m => m.id === id);
+      if (idx !== -1) {
+        merchants[idx] = { ...merchants[idx], name, upi, phone };
+        saveMerchants(merchants);
+        renderMerchantList(document.getElementById('merchantSearch')?.value || '');
+        populateHistoryUpiFilter();
+
+        if (selectedMerchant && selectedMerchant.id === id) {
+          selectMerchant(id);
+        }
+        showToast('✅ Payee account updated');
+      }
+      closeEditModal();
+    };
+
+    window.openDeletePayeeModal = function (id) {
+      const m = merchants.find(item => item.id === id);
+      if (!m) return;
+      pendingDeletePayeeId = id;
+      document.getElementById('deletePayeeName').innerText = m.name;
+      document.getElementById('deletePayeeUpi').innerText = m.upi;
+      toggleModal('deletePayeeModal', true);
+    };
+
+    window.closeDeletePayeeModal = function () {
+      pendingDeletePayeeId = null;
+      toggleModal('deletePayeeModal', false);
+    };
+
+    window.confirmDeletePayee = function () {
+      if (!pendingDeletePayeeId) return;
+      const id = pendingDeletePayeeId;
+      merchants = merchants.filter(m => m.id !== id);
+      saveMerchants(merchants);
+      renderMerchantList(document.getElementById('merchantSearch')?.value || '');
+      populateHistoryUpiFilter();
+
+      if (selectedMerchant && selectedMerchant.id === id) {
+        selectedMerchant = null;
+        document.getElementById('activeName').innerText = 'Select a merchant';
+        document.getElementById('activeUpi').innerText = '--';
+        document.getElementById('activeAvatar').innerText = '--';
+      }
+      closeDeletePayeeModal();
+      showToast('🗑️ Payee account deleted');
+    };
+
+    window.exportUpiAccounts = function () {
+      const list = loadMerchants();
+      if (!list || list.length === 0) {
+        showToast('⚠️ No payee accounts to export');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(list, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `Paypulse_UPI_Accounts_${Date.now()}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      showToast('📥 UPI IDs exported successfully');
+    };
+
+    window.triggerImportUpiFile = function () {
+      const input = document.getElementById('upiFileInput');
+      if (input) {
+        input.value = '';
+        input.click();
+      }
+    };
+
+    window.handleUpiFileImport = function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const content = e.target.result;
+          let importedList = [];
+
+          if (file.name.endsWith('.json')) {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed)) {
+              importedList = parsed.map(item => ({
+                id: item.id || Date.now().toString() + Math.random().toString().slice(2, 5),
+                name: item.name || item.payeeName || 'Merchant',
+                upi: item.upi || item.upiId || '',
+                phone: item.phone || item.mobile || ''
+              })).filter(item => item.upi && item.upi.includes('@'));
+            }
+          } else if (file.name.endsWith('.csv')) {
+            const lines = content.split('\n');
+            lines.forEach((line, idx) => {
+              if (idx === 0 && (line.toLowerCase().includes('upi') || line.toLowerCase().includes('name'))) return;
+              const parts = line.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+              if (parts.length >= 2 && parts[0] && parts[1]) {
+                let upi = parts[0].includes('@') ? parts[0] : parts[1];
+                let name = parts[0].includes('@') ? parts[1] : parts[0];
+                let phone = parts[2] || '';
+                if (upi && upi.includes('@')) {
+                  importedList.push({
+                    id: Date.now().toString() + Math.random().toString().slice(2, 5),
+                    upi, name, phone
+                  });
+                }
+              }
+            });
+          }
+
+          if (importedList.length > 0) {
+            const currentList = loadMerchants();
+            const upiMap = new Map();
+            currentList.forEach(m => upiMap.set(m.upi.toLowerCase(), m));
+            
+            let addedCount = 0;
+            importedList.forEach(m => {
+              if (!upiMap.has(m.upi.toLowerCase())) {
+                currentList.push(m);
+                upiMap.set(m.upi.toLowerCase(), m);
+                addedCount++;
+              }
+            });
+
+            saveMerchants(currentList);
+            merchants = currentList;
+            renderMerchantList();
+            populateHistoryUpiFilter();
+            showToast(`✅ Imported ${addedCount} new UPI account(s)`);
+          } else {
+            showToast('⚠️ No valid UPI accounts found in file');
+          }
+        } catch (err) {
+          console.error('Import error:', err);
+          showToast('⚠️ Failed to parse import file');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    window.openAddModal = function () {
+      document.getElementById('newName').value = '';
+      document.getElementById('newUpi').value = '';
+      document.getElementById('newPhone').value = '';
+      toggleModal('addModal', true);
+    };
+    window.closeAddModal = function () { toggleModal('addModal', false); };
+
+    window.saveNewMerchant = function () {
+      const name = document.getElementById('newName').value.trim();
+      const upi = document.getElementById('newUpi').value.trim();
+      const phone = document.getElementById('newPhone').value.trim();
+
+      if (!name || !upi) {
+        showToast('⚠️ Please enter Name and UPI ID');
+        return;
+      }
+
+      const newM = { id: Date.now().toString(), name, upi, phone };
+      merchants.push(newM);
+      saveMerchants(merchants);
+      selectMerchant(newM.id);
+      closeAddModal();
+      showToast('✅ Payee account added');
+    };
+
+    window.openBulkAddModal = function () {
+      document.getElementById('bulkTextarea').value = '';
+      toggleModal('bulkAddModal', true);
+    };
+    window.closeBulkAddModal = function () { toggleModal('bulkAddModal', false); };
+
+    window.saveBulkMerchants = function () {
+      const raw = document.getElementById('bulkTextarea').value.trim();
+      if (!raw) return;
+
+      const lines = raw.split('\n');
+      let count = 0;
+      lines.forEach(line => {
+        const parts = line.split(',').map(s => s.trim());
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+          merchants.push({
+            id: (Date.now() + Math.random()).toString(),
+            upi: parts[0],
+            name: parts[1],
+            phone: parts[2] || ''
+          });
+          count++;
+        }
+      });
+
+      if (count > 0) {
+        saveMerchants(merchants);
+        renderMerchantList();
+        populateHistoryUpiFilter();
+        showToast(`✅ Imported ${count} payee accounts`);
+        closeBulkAddModal();
+      } else {
+        showToast('⚠️ Invalid format. Use: upi, name, phone');
+      }
+    };
+
+    window.openResetUpiModal = function () { toggleModal('resetUpiModal', true); };
+    window.closeResetUpiModal = function () { toggleModal('resetUpiModal', false); };
+
+    window.confirmResetAllMerchants = function () {
+      merchants = [];
+      saveMerchants([]);
+      selectedMerchant = null;
+      document.getElementById('activeName').innerText = 'Select a merchant';
+      document.getElementById('activeUpi').innerText = '--';
+      document.getElementById('activeAvatar').innerText = '--';
+      renderMerchantList();
+      populateHistoryUpiFilter();
+      closeResetUpiModal();
+      showToast('🧹 All payee accounts reset');
+    };
+
+    let lastGeneratedTimestamp = '';
+
+    window.generateQR = function () {
+      if (!selectedMerchant) {
+        showToast('⚠️ Please select a payee account first');
+        return;
+      }
+
+      const rawVal = document.getElementById('amount').value.replace(/,/g, '');
+      const numVal = parseFloat(rawVal);
+
+      if (isNaN(numVal) || numVal <= 0) {
+        document.getElementById('amountError').classList.remove('hidden');
+        return;
+      }
+
+      document.getElementById('amountError').classList.add('hidden');
+      const formattedAmount = formatIndianCurrency(numVal);
+
+      const now = new Date();
+      lastGeneratedTimestamp = now.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('modalPayeeName').innerText = selectedMerchant.name;
+      document.getElementById('modalPayeeUpi').innerText = selectedMerchant.upi;
+      document.getElementById('modalAmountDisplay').innerText = `₹${formattedAmount}`;
+      const modalDateText = document.getElementById('modalDateTimeText');
+      if (modalDateText) {
+        modalDateText.innerText = lastGeneratedTimestamp;
+      }
+
+      const upiUrl = `upi://pay?pa=${encodeURIComponent(selectedMerchant.upi)}&pn=${encodeURIComponent(selectedMerchant.name)}&am=${numVal.toFixed(2)}&cu=INR`;
+
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      qrInstance = new QRCode(qrContainer, {
+        text: upiUrl,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      addHistoryRecord({
+        id: Date.now().toString(),
+        merchantName: selectedMerchant.name,
+        merchantUpi: selectedMerchant.upi,
+        amount: numVal,
+        formattedAmount: formattedAmount,
+        timestamp: now.toISOString()
+      });
+
+      playBeep();
+      toggleModal('qrModal', true);
+    };
+
+    window.closeQrModal = function () {
+      toggleModal('qrModal', false);
+      resetAmountToZero();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.copyQrLink = function () {
+      if (!selectedMerchant) return;
+      const rawVal = parseFloat(document.getElementById('amount').value.replace(/,/g, '')) || 0;
+      const upiUrl = `upi://pay?pa=${encodeURIComponent(selectedMerchant.upi)}&pn=${encodeURIComponent(selectedMerchant.name)}&am=${rawVal.toFixed(2)}&cu=INR`;
+      
+      const el = document.createElement('textarea');
+      el.value = upiUrl;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      showToast('📋 Payment link copied to clipboard');
+    };
+
+    window.shareViaWhatsapp = function () {
+      if (!selectedMerchant) return;
+      const phone = (selectedMerchant.phone || '').replace(/[^0-9]/g, '');
+      if (phone.length >= 10) {
+        const fullPhone = phone.length === 10 ? '91' + phone : phone;
+        window.open(`https://api.whatsapp.com/send?phone=${fullPhone}`, '_blank');
+      } else {
+        window.open('https://api.whatsapp.com/send', '_blank');
+      }
+    };
+
+    function generateCardCanvas(callback) {
+      if (!selectedMerchant) return;
+      const rawVal = parseFloat(document.getElementById('amount').value.replace(/,/g, '')) || 0;
+      const formattedAmount = formatIndianCurrency(rawVal);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 720;
+      canvas.height = 1040;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 720, 1040);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(1, '#1e1b4b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 720, 1040);
+
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.4)';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(30, 30, 660, 980);
+
+      ctx.fillStyle = '#818cf8';
+      ctx.font = 'bold 24px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('OFFICIAL UPI PAYMENT CARD', 360, 85);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 36px Inter, sans-serif';
+      ctx.fillText(selectedMerchant.name, 360, 145);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '22px JetBrains Mono, monospace';
+      ctx.fillText(selectedMerchant.upi, 360, 185);
+
+      const cardTimestamp = lastGeneratedTimestamp || new Date().toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      ctx.fillStyle = '#a5b4fc';
+      ctx.font = '600 18px JetBrains Mono, monospace';
+      ctx.fillText(`DATE & TIME: ${cardTimestamp}`, 360, 222);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(180, 250, 360, 360, 24);
+      } else {
+        ctx.rect(180, 250, 360, 360);
+      }
+      ctx.fill();
+
+      const drawQRAndFinish = () => {
+        const qrCanvas = document.querySelector('#qrcode canvas');
+        const qrImg = document.querySelector('#qrcode img');
+
+        if (qrCanvas && qrCanvas.width > 0) {
+          ctx.drawImage(qrCanvas, 195, 265, 330, 330);
+          finishCanvas();
+        } else if (qrImg && qrImg.src && qrImg.src.length > 10) {
+          if (qrImg.complete && qrImg.naturalWidth > 0) {
+            ctx.drawImage(qrImg, 195, 265, 330, 330);
+            finishCanvas();
+          } else {
+            const img = new Image();
+            img.onload = () => {
+              ctx.drawImage(img, 195, 265, 330, 330);
+              finishCanvas();
+            };
+            img.onerror = () => finishCanvas();
+            img.src = qrImg.src;
+          }
+        } else {
+          finishCanvas();
+        }
+      };
+
+      function finishCanvas() {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(100, 650, 520, 140, 20);
+        } else {
+          ctx.rect(100, 650, 520, 140);
+        }
+        ctx.fill();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 20px Inter, sans-serif';
+        ctx.fillText('PAYABLE AMOUNT', 360, 690);
+
+        ctx.fillStyle = '#34d399';
+        ctx.font = 'bold 56px JetBrains Mono, monospace';
+        ctx.fillText(`₹${formattedAmount}`, 360, 755);
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '18px Inter, sans-serif';
+        ctx.fillText('Scan with GPay, PhonePe, Paytm, BHIM, Cred or Any UPI App', 360, 860);
+
+        ctx.fillStyle = '#475569';
+        ctx.font = '14px Inter, sans-serif';
+        ctx.fillText('Generated via Paypulse v10.01 POS Terminal', 360, 950);
+
+        canvas.toBlob((blob) => {
+          callback(blob, canvas.toDataURL('image/png'));
+        }, 'image/png');
+      }
+
+      drawQRAndFinish();
+    }
+
+    window.shareQrCardImage = function () {
+      generateCardCanvas((blob) => {
+        if (!blob) return;
+        const file = new File([blob], `Payment_QR_${Date.now()}.png`, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            title: `Payment QR - ${selectedMerchant.name}`,
+            text: `Scan to pay ₹${document.getElementById('modalAmountDisplay').innerText} to ${selectedMerchant.name}`,
+            files: [file]
+          }).catch(() => {});
+        } else {
+          downloadQrImage();
+        }
+      });
+    };
+
+    window.downloadQrImage = function () {
+      generateCardCanvas((blob, dataUrl) => {
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `Paypulse_QR_${selectedMerchant ? selectedMerchant.name.replace(/\s+/g, '_') : 'Receipt'}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast('📥 Payment card saved to downloads');
+      });
+    };
+
+    window.printReceipt = function () {
+      window.print();
+    };
+
+    function loadHistory() {
+      populateHistoryUpiFilter();
+      renderHistoryList();
+      updateTodayTotal();
+    }
+
+    function addHistoryRecord(rec) {
+      history.unshift(rec);
+      saveHistory();
+    }
+
+    window.reuseTransaction = function (id) {
+      const rec = history.find(h => h.id === id);
+      if (!rec) return;
+
+      const upi = rec.merchantUpi || rec.upiId || rec.upi;
+      const name = rec.merchantName || rec.payeeName || 'Payee Account';
+      const amt = rec.amount;
+
+      let found = merchants.find(m => m.upi.toLowerCase() === (upi || '').toLowerCase());
+      if (!found) {
+        found = {
+          id: Date.now().toString(),
+          name: name,
+          upi: upi || '',
+          phone: ''
+        };
+        merchants.push(found);
+        saveMerchants(merchants);
+        renderMerchantList();
+      }
+
+      selectMerchant(found.id);
+
+      if (amt && amt > 0) {
+        const isInteger = amt % 1 === 0;
+        const formatted = isInteger ? formatInputValue(amt.toString()) : formatIndianCurrency(amt);
+        document.getElementById('amount').value = formatted;
+        calcExpression = amt.toString();
+        if (terminalMode === 'calc') {
+          updateCalcUI();
+        }
+        document.getElementById('amountError').classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast(`🔄 Reused: ₹${formatIndianCurrency(amt || 0)} for ${found.name}`);
+      playBeep();
+    };
+
+    window.openDeleteLogModal = function (id) {
+      const rec = history.find(h => h.id === id);
+      if (!rec) return;
+      pendingDeleteLogId = id;
+
+      const name = rec.merchantName || rec.payeeName || 'Payee Account';
+      const amt = rec.formattedAmount || formatIndianCurrency(rec.amount || 0);
+
+      const label = document.getElementById('deleteLogLabel');
+      if (label) {
+        label.innerText = `${name} (₹${amt})`;
+      }
+      toggleModal('deleteLogModal', true);
+    };
+
+    window.closeDeleteLogModal = function () {
+      pendingDeleteLogId = null;
+      toggleModal('deleteLogModal', false);
+    };
+
+    window.confirmDeleteLog = function () {
+      if (!pendingDeleteLogId) return;
+      history = history.filter(h => h.id !== pendingDeleteLogId);
+      saveHistory();
+      closeDeleteLogModal();
+      showToast('🗑️ Transaction log entry deleted');
+    };
+
+    function getLocalDateStr(dateInput) {
+      const d = new Date(dateInput);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getFilteredHistory() {
+      const timeFilter = document.getElementById('filterTime')?.value || 'all';
+      const upiFilter = document.getElementById('filterUpi')?.value || 'all';
+      const fromDateVal = document.getElementById('customFromDate')?.value || '';
+      const toDateVal = document.getElementById('customToDate')?.value || '';
+
+      const now = new Date();
+      const todayStr = getLocalDateStr(now);
+
+      return history.filter(item => {
+        const itemDate = new Date(item.timestamp);
+        const itemDateStr = getLocalDateStr(itemDate);
+        const itemUpi = item.merchantUpi || item.upiId || item.upi;
+
+        if (timeFilter === 'today' && itemDateStr !== todayStr) return false;
+        if (timeFilter === 'week') {
+          const diffDays = (now - itemDate) / (1000 * 3600 * 24);
+          if (diffDays > 7) return false;
+        }
+        if (timeFilter === 'custom') {
+          if (fromDateVal && itemDateStr < fromDateVal) return false;
+          if (toDateVal && itemDateStr > toDateVal) return false;
+        }
+
+        if (upiFilter !== 'all' && itemUpi !== upiFilter) return false;
+
+        return true;
+      });
+    }
+
+    function updateFilteredUpiEarningsCard() {
+      const card = document.getElementById('filteredUpiEarningsCard');
+      if (!card) return;
+
+      const upiFilter = document.getElementById('filterUpi')?.value || 'all';
+      if (upiFilter === 'all') {
+        card.classList.add('hidden');
+        return;
+      }
+
+      const filteredLogs = getFilteredHistory();
+      const totalAmount = filteredLogs.reduce((sum, item) => sum + (item.amount || 0), 0);
+
+      let merchantName = upiFilter;
+      let merchantIndex = -1;
+      const foundMerchant = merchants.find((m, idx) => {
+        if (m.upi === upiFilter) {
+          merchantIndex = idx;
+          return true;
+        }
+        return false;
+      });
+
+      if (foundMerchant) {
+        merchantName = foundMerchant.name;
+      } else if (filteredLogs.length > 0) {
+        merchantName = filteredLogs[0].merchantName || filteredLogs[0].payeeName || upiFilter;
+      }
+
+      const initials = merchantName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'P';
+      const avatarEl = document.getElementById('filteredUpiAvatar');
+      if (avatarEl) {
+        avatarEl.innerText = initials;
+        avatarEl.setAttribute('style', getAvatarBgStyle(merchantIndex, merchantName));
+      }
+
+      const timeLabelEl = document.getElementById('customDropdownTimeLabel');
+      const timeBadgeEl = document.getElementById('filteredUpiTimeBadge');
+      if (timeBadgeEl && timeLabelEl) {
+        timeBadgeEl.innerText = timeLabelEl.innerText || 'All Time';
+      }
+
+      document.getElementById('filteredUpiName').innerText = merchantName;
+      document.getElementById('filteredUpiHandle').innerText = upiFilter;
+      document.getElementById('filteredUpiTotal').innerText = `₹${formatIndianCurrency(totalAmount)}`;
+      document.getElementById('filteredUpiCount').innerText = `${filteredLogs.length} ${filteredLogs.length === 1 ? 'payment' : 'payments'}`;
+
+      card.classList.remove('hidden');
+
+      const compactModal = document.getElementById('filteredEarningsDetailsModal');
+      if (compactModal && !compactModal.classList.contains('hidden')) {
+        renderCompactFilteredTransactions();
+      }
+    }
+
+    window.openFilteredEarningsDetailsModal = function () {
+      const upiFilter = document.getElementById('filterUpi')?.value || 'all';
+      if (upiFilter === 'all') return;
+      renderCompactFilteredTransactions();
+      toggleModal('filteredEarningsDetailsModal', true);
+    };
+
+    window.closeFilteredEarningsDetailsModal = function () {
+      toggleModal('filteredEarningsDetailsModal', false);
+    };
+
+    window.shareFilteredEarningsSummary = function () {
+      const upiFilter = document.getElementById('filterUpi')?.value || 'all';
+      if (upiFilter === 'all') return;
+
+      const filteredLogs = getFilteredHistory();
+      const totalAmount = filteredLogs.reduce((sum, item) => sum + (item.amount || 0), 0);
+
+      let merchantName = upiFilter;
+      const foundMerchant = merchants.find(m => m.upi === upiFilter);
+      if (foundMerchant) {
+        merchantName = foundMerchant.name;
+      } else if (filteredLogs.length > 0) {
+        merchantName = filteredLogs[0].merchantName || filteredLogs[0].payeeName || upiFilter;
+      }
+
+      const periodLabel = document.getElementById('customDropdownTimeLabel')?.innerText || 'All Time';
+
+      let summaryText = `📊 *Paypulse Payee Earnings Summary*\n`;
+      summaryText += `👤 Payee: *${merchantName}*\n`;
+      summaryText += `🏦 UPI ID: ${upiFilter}\n`;
+      summaryText += `📅 Filter: ${periodLabel}\n`;
+      summaryText += `💰 Total Earnings: *₹${formatIndianCurrency(totalAmount)}* (${filteredLogs.length} ${filteredLogs.length === 1 ? 'tx' : 'txns'})\n`;
+
+      if (filteredLogs.length > 0) {
+        summaryText += `\n🧾 *Transactions:*\n`;
+        filteredLogs.slice(0, 15).forEach((rec, i) => {
+          const d = new Date(rec.timestamp);
+          const dateFmt = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+          const amtFmt = rec.formattedAmount || formatIndianCurrency(rec.amount || 0);
+          summaryText += `${i + 1}. ${dateFmt} — ₹${amtFmt}\n`;
+        });
+        if (filteredLogs.length > 15) {
+          summaryText += `...and ${filteredLogs.length - 15} more transaction(s)\n`;
+        }
+      }
+
+      if (navigator.share) {
+        navigator.share({
+          title: `${merchantName} - Paypulse Earnings`,
+          text: summaryText
+        }).catch(() => {});
+      } else {
+        const el = document.createElement('textarea');
+        el.value = summaryText;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast('📋 Earnings report copied to clipboard');
+      }
+    };
+
+    function renderCompactFilteredTransactions() {
+      const upiFilter = document.getElementById('filterUpi')?.value || 'all';
+      if (upiFilter === 'all') {
+        closeFilteredEarningsDetailsModal();
+        return;
+      }
+
+      const filteredLogs = getFilteredHistory();
+      const totalAmount = filteredLogs.reduce((sum, item) => sum + (item.amount || 0), 0);
+
+      let merchantName = upiFilter;
+      let merchantIndex = -1;
+      const foundMerchant = merchants.find((m, idx) => {
+        if (m.upi === upiFilter) {
+          merchantIndex = idx;
+          return true;
+        }
+        return false;
+      });
+      if (foundMerchant) {
+        merchantName = foundMerchant.name;
+      } else if (filteredLogs.length > 0) {
+        merchantName = filteredLogs[0].merchantName || filteredLogs[0].payeeName || upiFilter;
+      }
+
+      const initials = merchantName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'P';
+      const avatarEl = document.getElementById('compactModalAvatar');
+      if (avatarEl) {
+        avatarEl.innerText = initials;
+        avatarEl.setAttribute('style', getAvatarBgStyle(merchantIndex, merchantName));
+      }
+
+      document.getElementById('compactModalPayeeName').innerText = merchantName;
+      document.getElementById('compactModalPayeeUpi').innerText = upiFilter;
+      document.getElementById('compactModalCount').innerText = `${filteredLogs.length} ${filteredLogs.length === 1 ? 'transaction' : 'transactions'}`;
+      document.getElementById('compactModalTotal').innerText = `₹${formatIndianCurrency(totalAmount)}`;
+
+      const listEl = document.getElementById('compactTransactionList');
+      listEl.innerHTML = '';
+
+      if (filteredLogs.length === 0) {
+        listEl.innerHTML = `<div class="text-center py-6 opacity-60 text-xs">No transactions found in this period.</div>`;
+        return;
+      }
+
+      filteredLogs.forEach(rec => {
+        const d = new Date(rec.timestamp);
+        const dateFormatted = d.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        const amt = rec.formattedAmount || formatIndianCurrency(rec.amount || 0);
+
+        const row = document.createElement('div');
+        row.className = 'theme-sub-bg border rounded-xl px-3 py-2 flex items-center justify-between gap-2 text-xs';
+        row.style.borderColor = 'var(--border-color)';
+
+        row.innerHTML = `
+          <div class="min-w-0">
+            <div class="font-mono text-[11px] font-semibold opacity-90 truncate">${dateFormatted}</div>
+          </div>
+          <div class="flex items-center gap-2.5 shrink-0">
+            <span class="font-mono font-black text-emerald-500 text-xs sm:text-sm">₹${amt}</span>
+            <div class="flex items-center gap-1 border-l pl-2 border-slate-200/40 dark:border-slate-700/60">
+              <button onclick="openEditLogModal('${rec.id}')" class="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 theme-accent-text transition" title="Edit Amount">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button onclick="openDeleteLogModal('${rec.id}')" class="p-1.5 rounded-lg hover:bg-red-500/20 text-red-500 transition" title="Delete Entry">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+
+    window.openEditLogModal = function (id) {
+      const rec = history.find(h => h.id === id);
+      if (!rec) return;
+      pendingEditLogId = id;
+
+      document.getElementById('editLogId').value = id;
+      document.getElementById('editLogPayeeName').innerText = rec.merchantName || rec.payeeName || 'Payee Account';
+      document.getElementById('editLogPayeeUpi').innerText = rec.merchantUpi || rec.upiId || rec.upi || '--';
+      document.getElementById('editLogAmount').value = rec.amount || 0;
+
+      toggleModal('editLogModal', true);
+    };
+
+    window.closeEditLogModal = function () {
+      pendingEditLogId = null;
+      toggleModal('editLogModal', false);
+    };
+
+    window.saveEditLog = function () {
+      const id = document.getElementById('editLogId').value;
+      const newAmt = parseFloat(document.getElementById('editLogAmount').value);
+
+      if (isNaN(newAmt) || newAmt <= 0) {
+        showToast('⚠️ Please enter a valid amount greater than ₹0');
+        return;
+      }
+
+      const idx = history.findIndex(h => h.id === id);
+      if (idx !== -1) {
+        history[idx].amount = newAmt;
+        history[idx].formattedAmount = formatIndianCurrency(newAmt);
+        saveHistory();
+        showToast('✅ Transaction amount updated');
+      }
+
+      closeEditLogModal();
+    };
+
+    function renderHistoryList() {
+      const listContainer = document.getElementById('historyList');
+      if (!listContainer) return;
+      listContainer.innerHTML = '';
+
+      const filtered = getFilteredHistory();
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div class="col-span-full text-center py-8 opacity-60 text-xs">
+            <p>No transaction logs match current filter.</p>
+          </div>
+        `;
+        updateFilteredUpiEarningsCard();
+        return;
+      }
+
+      filtered.forEach(rec => {
+        const dateObj = new Date(rec.timestamp);
+        const dateFormatted = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+        const name = rec.merchantName || rec.payeeName || 'Payee Account';
+        const upi = rec.merchantUpi || rec.upiId || rec.upi || '--';
+        const amt = rec.formattedAmount || formatIndianCurrency(rec.amount || 0);
+
+        const card = document.createElement('div');
+        card.className = 'theme-sub-bg border rounded-2xl p-3 flex flex-col justify-between shadow-sm gap-2.5';
+        card.style.borderColor = 'var(--border-color)';
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2 min-w-0">
+            <div class="min-w-0">
+              <div class="text-xs font-bold truncate">${name}</div>
+              <div class="text-[10px] font-mono opacity-70 truncate mt-0.5">${upi}</div>
+              <div class="text-[9px] opacity-50 mt-1">${dateFormatted}</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-sm font-black font-mono text-emerald-500">₹${amt}</div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-slate-200/40 dark:border-slate-800/60">
+            <span class="text-[9px] font-bold text-emerald-500/80 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Generated</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="reuseTransaction('${rec.id}')" class="px-2.5 py-1 rounded-lg theme-accent-btn text-white text-[10px] font-bold flex items-center gap-1 shadow-sm transition active:scale-95" title="Reuse Transaction">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Reuse
+              </button>
+              <button onclick="openEditLogModal('${rec.id}')" class="p-1 rounded-lg theme-keypad border hover:border-indigo-500/50 transition text-[10px] theme-accent-text" style="border-color: var(--border-color);" title="Edit Amount">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button onclick="openDeleteLogModal('${rec.id}')" class="p-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 transition text-[10px]" title="Delete Log">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+
+      updateFilteredUpiEarningsCard();
+    }
+
+    function updateTodayTotal() {
+      const todayStr = getLocalDateStr(new Date());
+      const todaySum = history
+        .filter(item => getLocalDateStr(item.timestamp) === todayStr)
+        .reduce((sum, item) => sum + (item.amount || 0), 0);
+
+      const todayElem = document.getElementById('headerTodayTotal');
+      if (todayElem) {
+        todayElem.innerText = `₹${formatIndianCurrency(todaySum)}`;
+      }
+    }
+
+    window.exportHistoryCSV = function () {
+      if (history.length === 0) {
+        showToast('⚠️ No history records to export');
+        return;
+      }
+
+      let csv = 'Timestamp,Payee Name,UPI ID,Amount (INR)\n';
+      history.forEach(r => {
+        const name = r.merchantName || r.payeeName || '';
+        const upi = r.merchantUpi || r.upiId || '';
+        csv += `"${r.timestamp}","${name}","${upi}",${r.amount || 0}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Paypulse_Transactions_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('📊 CSV Export downloaded');
+    };
+
+    window.openClearHistoryModal = function () { toggleModal('clearHistoryModal', true); };
+    window.closeClearHistoryModal = function () { toggleModal('clearHistoryModal', false); };
+
+    window.confirmClearHistory = function () {
+      history = [];
+      saveHistory();
+      closeClearHistoryModal();
+      showToast('🧹 History logs cleared');
+    };
+
+    function populateHistoryUpiFilter() {
+      const dropdownMenu = document.getElementById('customDropdownUpiMenu');
+      const selectHidden = document.getElementById('filterUpi');
+      if (!dropdownMenu || !selectHidden) return;
+
+      const currentVal = selectHidden.value || 'all';
+      dropdownMenu.innerHTML = '';
+      selectHidden.innerHTML = '<option value="all">All Merchant Accounts</option>';
+
+      const upiMap = new Map();
+      merchants.forEach(m => upiMap.set(m.upi, m.name));
+      history.forEach(h => {
+        const u = h.merchantUpi || h.upiId || h.upi;
+        const n = h.merchantName || h.payeeName || u;
+        if (u && !upiMap.has(u)) upiMap.set(u, n);
+      });
+
+      const allOpt = document.createElement('div');
+      allOpt.className = 'px-3 py-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between';
+      allOpt.onclick = () => selectCustomUpi('all', 'All Accounts');
+      allOpt.innerHTML = '<span>All Accounts</span>';
+      dropdownMenu.appendChild(allOpt);
+
+      upiMap.forEach((name, upi) => {
+        const item = document.createElement('div');
+        item.className = 'px-3 py-2 text-xs font-medium hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer flex items-center justify-between';
+        item.onclick = () => selectCustomUpi(upi, name);
+        item.innerHTML = `<span class="truncate">${name} (${upi})</span>`;
+        dropdownMenu.appendChild(item);
+
+        const opt = document.createElement('option');
+        opt.value = upi;
+        opt.innerText = `${name} (${upi})`;
+        selectHidden.appendChild(opt);
+      });
+
+      if (currentVal !== 'all' && upiMap.has(currentVal)) {
+        selectHidden.value = currentVal;
+      }
+    }
+
+    window.toggleCustomDropdown = function (targetId) {
+      const menu = document.getElementById(targetId);
+      if (!menu) return;
+
+      const isHidden = menu.classList.contains('hidden');
+      closeAllDropdowns();
+
+      if (isHidden) {
+        menu.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          menu.classList.remove('opacity-0', 'scale-95');
+        });
+      }
+    };
+
+    function closeAllDropdowns() {
+      ['customDropdownTimeMenu', 'customDropdownUpiMenu', 'themeMenuDropdown', 'systemMenuDropdown'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden', 'opacity-0', 'scale-95');
+        }
+      });
+      closeAllCardMenus();
+    }
+
+    window.selectCustomTime = function (val, label) {
+      const filterTimeEl = document.getElementById('filterTime');
+      if (filterTimeEl && !filterTimeEl.querySelector('option[value="custom"]')) {
+        const opt = document.createElement('option');
+        opt.value = 'custom';
+        opt.innerText = 'Date Range';
+        filterTimeEl.appendChild(opt);
+      }
+      filterTimeEl.value = val;
+
+      const dateContainer = document.getElementById('customDateInputContainer');
+      const fromInput = document.getElementById('customFromDate');
+      const toInput = document.getElementById('customToDate');
+
+      if (val === 'custom') {
+        if (dateContainer) dateContainer.classList.remove('hidden');
+        const todayStr = getLocalDateStr(new Date());
+        if (fromInput && !fromInput.value) fromInput.value = todayStr;
+        if (toInput && !toInput.value) toInput.value = todayStr;
+        updateCustomDateRangeLabel();
+      } else {
+        if (dateContainer) dateContainer.classList.add('hidden');
+        document.getElementById('customDropdownTimeLabel').innerText = label;
+      }
+
+      closeAllDropdowns();
+      renderHistoryList();
+    };
+
+    function formatShortDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      return `${parts[2]}/${parts[1]}`;
+    }
+
+    function updateCustomDateRangeLabel() {
+      const fromVal = document.getElementById('customFromDate')?.value || '';
+      const toVal = document.getElementById('customToDate')?.value || '';
+      const labelEl = document.getElementById('customDropdownTimeLabel');
+      if (!labelEl) return;
+
+      if (fromVal && toVal) {
+        labelEl.innerText = `${formatShortDate(fromVal)} → ${formatShortDate(toVal)}`;
+      } else if (fromVal) {
+        labelEl.innerText = `From ${formatShortDate(fromVal)}`;
+      } else if (toVal) {
+        labelEl.innerText = `To ${formatShortDate(toVal)}`;
+      } else {
+        labelEl.innerText = 'Date Range';
+      }
+    }
+
+    window.onCustomDateRangeChanged = function () {
+      const fromInput = document.getElementById('customFromDate');
+      const toInput = document.getElementById('customToDate');
+      if (fromInput && toInput && fromInput.value && toInput.value && fromInput.value > toInput.value) {
+        toInput.value = fromInput.value;
+      }
+      updateCustomDateRangeLabel();
+      renderHistoryList();
+    };
+
+    window.selectCustomUpi = function (val, label) {
+      document.getElementById('filterUpi').value = val;
+      document.getElementById('customDropdownUpiLabel').innerText = label;
+      closeAllDropdowns();
+      renderHistoryList();
+    };
+
+    window.toggleThemeMenu = function () { toggleCustomDropdown('themeMenuDropdown'); };
+    window.closeThemeMenu = function () { closeAllDropdowns(); };
+
+    window.setTheme = function (t) {
+      applyThemeUI(t);
+      if (useRestFallback || !currentUser) {
+        fetch(`${RTDB_URL}/artifacts/${appId}/public/data/settings.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ theme: t })
+        }).catch(() => {});
+      } else {
+        const settingsRef = ref(db, `artifacts/${appId}/public/data/settings`);
+        set(settingsRef, { theme: t }).catch(() => {
+          useRestFallback = true;
+          window.setTheme(t);
+        });
+      }
+    };
+
+    window.toggleSystemMenu = function () { toggleCustomDropdown('systemMenuDropdown'); };
+    window.closeSystemMenu = function () { closeAllDropdowns(); };
+
+    window.openAboutModal = function () { toggleModal('aboutModal', true); };
+    window.closeAboutModal = function () { toggleModal('aboutModal', false); };
+
+    function checkStandaloneMode() {
+      isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || 
+                         window.navigator.standalone || 
+                         document.referrer.includes('android-app://');
+      
+      const titleElem = document.getElementById('pwaInstallTitle');
+      const subElem = document.getElementById('pwaInstallSub');
+      if (isStandaloneMode) {
+        if (titleElem) titleElem.textContent = 'App Installed ✓';
+        if (subElem) subElem.textContent = 'Running in POS Mode';
+      }
+    }
+
+    window.triggerPwaInstall = function () {
+      closeSystemMenu();
+      if (isStandaloneMode) {
+        showToast('Paypulse is already running as an installed PWA');
+        return;
+      }
+      if (deferredPrompt) {
+        execNativePwaInstall();
+      } else {
+        openInstallGuideModal();
+      }
+    };
+
+    window.execNativePwaInstall = function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          showToast('Installing Paypulse POS App...');
+        }
+        deferredPrompt = null;
+        closeInstallGuideModal();
+      });
+    };
+
+    window.openInstallGuideModal = function () {
+      const promptBox = document.getElementById('installNativePromptContainer');
+      const iframeNotice = document.getElementById('iframeNoticeContainer');
+
+      if (promptBox) {
+        promptBox.classList.toggle('hidden', !deferredPrompt);
+      }
+      if (iframeNotice) {
+        iframeNotice.classList.toggle('hidden', !isInIframe());
+      }
+
+      toggleModal('installGuideModal', true);
+    };
+
+    window.closeInstallGuideModal = function () { toggleModal('installGuideModal', false); };
+
+    function isInIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
+    }
+
+    window.openInFullWindow = function () {
+      try {
+        window.open(window.location.href, '_blank');
+      } catch (e) {
+        showToast('Unable to open new window');
+      }
+    };
+
+    function toggleModal(id, show) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      const card = document.getElementById(id + 'Card') || modal.firstElementChild;
+
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          modal.classList.remove('opacity-0');
+          if (card) card.classList.remove('scale-95');
+        }, 10);
+      } else {
+        modal.classList.add('opacity-0');
+        if (card) card.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    function initPWAInfrastructure() {
+      let manifestLink = document.getElementById('appManifestLink');
+      const manifestData = {
+        id: "paypulse-pos-v10.01",
+        name: "Paypulse v10.01 POS",
+        short_name: "Paypulse",
+        description: "Instant UPI Payment QR Terminal",
+        start_url: ".",
+        scope: ".",
+        display: "standalone",
+        orientation: "portrait",
+        background_color: "#0f172a",
+        theme_color: "#4f46e5",
+        icons: [
+          {
+            src: "https://cdn-icons-png.flaticon.com/512/2313/2313039.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any maskable"
+          },
+          {
+            src: "https://cdn-icons-png.flaticon.com/512/2313/2313039.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
+          }
+        ]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      if (manifestLink) {
+        manifestLink.href = manifestUrl;
+      }
+
+      if ('serviceWorker' in navigator) {
+        try {
+          const swCode = `
+            const CACHE_NAME = 'paypulse-v10.01-sw';
+            self.addEventListener('install', (e) => self.skipWaiting());
+            self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+            self.addEventListener('fetch', (e) => {
+              e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+            });
+          `;
+          const swBlob = new Blob([swCode], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (err) {}
+      }
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      checkStandaloneMode();
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      checkStandaloneMode();
+      showToast('🎉 Paypulse POS installed successfully');
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('#customDropdownTime') && 
+          !e.target.closest('#customDropdownUpi') && 
+          !e.target.closest('#themeMenuWrapper') && 
+          !e.target.closest('#systemMenuWrapper')) {
+        closeAllDropdowns();
+      }
+    });
+
+    window.openCloudBackupModal = function () {
+      const isOnline = !!currentUser || useRestFallback;
+      updateCloudStatusUI(isOnline ? 'Cloud Sync Active' : 'Connecting...', isOnline);
+      toggleModal('cloudBackupModal', true);
+    };
+
+    window.closeCloudBackupModal = function () {
+      toggleModal('cloudBackupModal', false);
+    };
+
+    window.forceCloudSyncNow = function () {
+      if (!currentUser && !useRestFallback) {
+        showToast('⚠️ Waiting for cloud connection...');
+        return;
+      }
+      saveMerchants(merchants);
+      saveHistory();
+      updateCloudStatusUI('Synced Just Now ✓', true);
+      showToast('☁️ Cloud backup synchronized');
+    };
+
+    window.copyCloudUserId = function () {
+      const idToCopy = currentUser ? currentUser.uid : 'paypulse-a855a-shared';
+      const el = document.createElement('textarea');
+      el.value = idToCopy;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      showToast('📋 Terminal Cloud ID copied');
+    };
+
+    async function initRestFallbackSync() {
+      useRestFallback = true;
+      updateCloudStatusUI('Syncing...', true);
+      const userIdDisplay = document.getElementById('cloudUserIdDisplay');
+      if (userIdDisplay) userIdDisplay.innerText = 'paypulse-a855a-shared';
+
+      try {
+        const [mRes, hRes, sRes] = await Promise.all([
+          fetch(`${RTDB_URL}/artifacts/${appId}/public/data/merchants.json`),
+          fetch(`${RTDB_URL}/artifacts/${appId}/public/data/history.json`),
+          fetch(`${RTDB_URL}/artifacts/${appId}/public/data/settings.json`)
+        ]);
+
+        if (!mRes.ok || !hRes.ok) {
+          throw new Error('Database fetch failed');
+        }
+
+        const mData = await mRes.json();
+        if (mData && Array.isArray(mData.list)) {
+          merchants = mData.list;
+        } else {
+          merchants = [...DEFAULT_MERCHANTS];
+          saveMerchants(merchants);
+        }
+        renderMerchantList(document.getElementById('merchantSearch')?.value || '');
+
+        const hData = await hRes.json();
+        if (hData && Array.isArray(hData.logs)) {
+          history = hData.logs;
+        }
+        populateHistoryUpiFilter();
+        renderHistoryList();
+        updateTodayTotal();
+
+        const sData = await sRes.json();
+        if (sData && sData.theme) {
+          applyThemeUI(sData.theme);
+        }
+
+        updateCloudStatusUI('Synced ✓', true);
+      } catch (e) {
+        console.error('REST fallback error:', e);
+        updateCloudStatusUI('Sync Error', false);
+      }
+    }
+
+    async function initCloudListeners(user) {
+      if (!user) return;
+      useRestFallback = false;
+      updateCloudStatusUI('Syncing...', true);
+
+      const merchantsRef = ref(db, `artifacts/${appId}/public/data/merchants`);
+      const historyRef = ref(db, `artifacts/${appId}/public/data/history`);
+      const settingsRef = ref(db, `artifacts/${appId}/public/data/settings`);
+
+      try {
+        const settingsSnap = await get(settingsRef);
+        if (settingsSnap.exists() && settingsSnap.val().theme) {
+          applyThemeUI(settingsSnap.val().theme);
+        }
+      } catch (e) {}
+
+      if (unsubMerchants) unsubMerchants();
+      unsubMerchants = onValue(merchantsRef, (snapshot) => {
+        if (snapshot.exists() && Array.isArray(snapshot.val().list)) {
+          merchants = snapshot.val().list;
+        } else {
+          merchants = [...DEFAULT_MERCHANTS];
+          saveMerchants(merchants);
+        }
+        renderMerchantList(document.getElementById('merchantSearch')?.value || '');
+        populateHistoryUpiFilter();
+        updateCloudStatusUI('Synced ✓', true);
+      }, (err) => {
+        console.error('Database merchants listener error:', err);
+        initRestFallbackSync();
+      });
+
+      if (unsubHistory) unsubHistory();
+      unsubHistory = onValue(historyRef, (snapshot) => {
+        if (snapshot.exists() && Array.isArray(snapshot.val().logs)) {
+          history = snapshot.val().logs;
+        } else {
+          history = [];
+        }
+        populateHistoryUpiFilter();
+        renderHistoryList();
+        updateTodayTotal();
+        updateCloudStatusUI('Synced ✓', true);
+      }, (err) => {
+        console.error('Database history listener error:', err);
+        initRestFallbackSync();
+      });
+    }
+
+    function saveHistory() {
+      updateCloudStatusUI('Syncing...', true);
+      if (useRestFallback || !currentUser) {
+        fetch(`${RTDB_URL}/artifacts/${appId}/public/data/history.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ logs: history, updatedAt: new Date().toISOString() })
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            updateCloudStatusUI('Synced ✓', true);
+          })
+          .catch((err) => {
+            console.error('REST history sync error:', err);
+            updateCloudStatusUI('Sync Error', false);
+          });
+      } else {
+        const dbRef = ref(db, `artifacts/${appId}/public/data/history`);
+        set(dbRef, { logs: history, updatedAt: new Date().toISOString() })
+          .then(() => updateCloudStatusUI('Synced ✓', true))
+          .catch((err) => {
+            console.error('Error syncing history to cloud:', err);
+            useRestFallback = true;
+            saveHistory();
+          });
+      }
+      populateHistoryUpiFilter();
+      renderHistoryList();
+      updateTodayTotal();
+    }
+
+    window.onload = async function () {
+      initPWAInfrastructure();
+      checkStandaloneMode();
+
+      applyThemeUI('platinum');
+      merchants = [...DEFAULT_MERCHANTS];
+      renderMerchantList();
+      loadHistory();
+
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.warn('Auth unavailable, switching to direct database sync:', err);
+        initRestFallbackSync();
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser = user;
+          initCloudListeners(user);
+        }
+      });
+    };
+  </script>
+</body>
+</html>
