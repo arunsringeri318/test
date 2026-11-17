@@ -1199,24 +1199,28 @@
     const RTDB_URL = "https://paypulse-a855a-default-rtdb.firebaseio.com";
     const rawAppId = typeof __app_id !== 'undefined' ? __app_id : 'paypulse-a855a';
     const appId = String(rawAppId).replace(/[.#$\[\]]/g, '_');
-    const baseConfig = typeof __firebase_config !== 'undefined'
-      ? JSON.parse(__firebase_config)
-      : { projectId: "paypulse-a855a" };
 
-    const firebaseConfig = {
-      ...baseConfig,
-      databaseURL: RTDB_URL
-    };
+    let app = null;
+    let auth = null;
+    let db = null;
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+    if (typeof __firebase_config !== 'undefined') {
+      try {
+        const baseConfig = JSON.parse(__firebase_config);
+        app = initializeApp({ ...baseConfig, databaseURL: RTDB_URL });
+        auth = getAuth(app);
+        db = getDatabase(app);
+      } catch (e) {
+        console.warn('SDK initialization skipped, using direct database sync:', e);
+      }
+    }
 
     let currentUser = null;
     let currentTheme = 'platinum';
     let unsubMerchants = null;
     let unsubHistory = null;
-    let useRestFallback = false;
+    let useRestFallback = !app;
+    let restPollTimer = null;
 
     let merchants = [];
     let selectedMerchant = null;
@@ -2926,14 +2930,19 @@
     }
 
     function initPWAInfrastructure() {
+      if (window.location.protocol === 'file:') {
+        return;
+      }
+
       let manifestLink = document.getElementById('appManifestLink');
+      const baseUrl = window.location.href.split('#')[0].split('?')[0];
       const manifestData = {
         id: "paypulse-pos-v10.01",
         name: "Paypulse v10.01 POS",
         short_name: "Paypulse",
         description: "Instant UPI Payment QR Terminal",
-        start_url: ".",
-        scope: ".",
+        start_url: baseUrl,
+        scope: "./",
         display: "standalone",
         orientation: "portrait",
         background_color: "#0f172a",
@@ -2960,7 +2969,7 @@
         manifestLink.href = manifestUrl;
       }
 
-      if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
         try {
           const swCode = `
             const CACHE_NAME = 'paypulse-v10.01-sw';
@@ -3027,15 +3036,10 @@
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      showToast('📋 Terminal Cloud ID copied');
+      showToast('📋 Cloud Terminal ID copied');
     };
 
-    async function initRestFallbackSync() {
-      useRestFallback = true;
-      updateCloudStatusUI('Syncing...', true);
-      const userIdDisplay = document.getElementById('cloudUserIdDisplay');
-      if (userIdDisplay) userIdDisplay.innerText = 'paypulse-a855a-shared';
-
+    async function fetchRestCloudData(showStatus = true) {
       try {
         const [mRes, hRes, sRes] = await Promise.all([
           fetch(`${RTDB_URL}/artifacts/${appId}/public/data/merchants.json`),
@@ -3050,7 +3054,7 @@
         const mData = await mRes.json();
         if (mData && Array.isArray(mData.list)) {
           merchants = mData.list;
-        } else {
+        } else if (merchants.length === 0) {
           merchants = [...DEFAULT_MERCHANTS];
           saveMerchants(merchants);
         }
@@ -3065,19 +3069,33 @@
         updateTodayTotal();
 
         const sData = await sRes.json();
-        if (sData && sData.theme) {
+        if (sData && sData.theme && sData.theme !== currentTheme) {
           applyThemeUI(sData.theme);
         }
 
-        updateCloudStatusUI('Synced ✓', true);
+        if (showStatus) updateCloudStatusUI('Synced ✓', true);
       } catch (e) {
-        console.error('REST fallback error:', e);
-        updateCloudStatusUI('Sync Error', false);
+        console.error('REST sync error:', e);
+        if (showStatus) updateCloudStatusUI('Sync Error', false);
       }
     }
 
+    async function initRestFallbackSync() {
+      useRestFallback = true;
+      updateCloudStatusUI('Syncing...', true);
+      const userIdDisplay = document.getElementById('cloudUserIdDisplay');
+      if (userIdDisplay) userIdDisplay.innerText = 'paypulse-a855a-shared';
+
+      await fetchRestCloudData(true);
+
+      if (restPollTimer) clearInterval(restPollTimer);
+      restPollTimer = setInterval(() => {
+        fetchRestCloudData(false);
+      }, 15000);
+    }
+
     async function initCloudListeners(user) {
-      if (!user) return;
+      if (!user || !db) return;
       useRestFallback = false;
       updateCloudStatusUI('Syncing...', true);
 
@@ -3165,6 +3183,11 @@
       renderMerchantList();
       loadHistory();
 
+      if (!auth || !db) {
+        await initRestFallbackSync();
+        return;
+      }
+
       try {
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
@@ -3173,7 +3196,7 @@
         }
       } catch (err) {
         console.warn('Auth unavailable, switching to direct database sync:', err);
-        initRestFallbackSync();
+        await initRestFallbackSync();
       }
 
       onAuthStateChanged(auth, (user) => {
